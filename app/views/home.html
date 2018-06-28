@@ -1,0 +1,14 @@
+<!-- Loading -->
+<div layout="column" layout-fill ng-if="loading" layout-align="center center">
+  <md-progress-circular
+    md-diameter="42"
+    md-mode="indeterminate"
+  ></md-progress-circular>
+</div>
+
+<!-- Loaded -->
+<md-content class="md-padding" layout="column" layout-fill ng-if="!loading">
+
+  Hello World
+
+</md-content>

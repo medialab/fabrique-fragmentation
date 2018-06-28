@@ -1,0 +1,37 @@
+{
+  "name": "fabrique-fragmentation",
+  "version": "0.0.1",
+  "description": "Prototype Network Fabrique de la Loi",
+  "main": "index.js",
+  "dependencies": {
+    "angular": "^1.6.1",
+    "angular-animate": "^1.6.1",
+    "angular-aria": "^1.6.1",
+    "angular-material": "^1.1.7",
+    "angular-route": "^1.6.1",
+    "angular-sanitize": "^1.6.9",
+    "d3": "^4.2.2",
+    "graphology": "^0.11.3",
+    "graphology-library": "0.1.0",
+    "sigma": "2.0.0-alpha10-rc2"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "scripts": {
+    "build": "webpack --colors --progress",
+    "dev": "webpack-dev-server --port 3000 -d --colors --progress --watch",
+    "postinstall": "npm run build",
+    "watch": "webpack -d --colors --progress --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "fabrique-fragmentation"
+  },
+  "author": "jacomyma",
+  "license": "MIT"
+}
