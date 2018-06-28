@@ -1,0 +1,16 @@
+version: '2'
+services:
+  db:
+    image: mariadb:latest
+    ports: 
+      - 3306:3306
+    volumes:
+      - ./nosdeputes.fr_donnees.sql.gz:/nosdeputes.fr_donnees.sql.gz
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8080:8080
+    links:
+      - db
