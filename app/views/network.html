@@ -10,7 +10,7 @@
 <!-- Loaded -->
 <div layout="column" layout-fill ng-if="!loading" md-colors="{'color':'default-primary'}">
 
-  <div layout="row" style="height: 140px; z-index: 1" class="md-whiteframe-4dp" md-colors="{'background-color':'default-primary'}">
+  <div layout="row" style="height: 140px; z-index: 1" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
     <!-- <div style="width: 100px">
       TODO: Loi précédente
     </div> -->
@@ -20,7 +20,7 @@
           PROJET DE LOI
         </md-button>
       </div>
-      <div flex="33" layout="row" md-colors="{'background-color':'default-primary-500-0.8'}">
+      <div flex="33" layout="row" md-colors="{'background':'default-primary-500-0.8'}">
         <div ng-repeat="lecture in data.lectures" flex layout="column" layout-align="center center">
           <md-button>
             {{lecture}}
