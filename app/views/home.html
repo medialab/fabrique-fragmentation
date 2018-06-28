@@ -23,7 +23,16 @@
   </div>
 
   <!-- LIST -->
-  <div flex>
-    TODO: List
+  <div layout="column" flex>
+    <div style="height: 40px">
+      LIST HEADER
+    </div>
+    <div flex>
+      <md-virtual-repeat-container layout-fill>
+        <div md-virtual-repeat="item in items" style="height: 40px">
+          <align-frag-list-item item="item" layout-fill></align-frag-list-item>
+        </div>
+      </md-virtual-repeat-container>
+    </div>
   </div>
 </div>

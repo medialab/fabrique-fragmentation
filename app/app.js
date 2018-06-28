@@ -55,3 +55,12 @@ config(function($routeProvider, $mdThemingProvider) {
 // Services
 
 // Directives
+.directive('alignFragListItem', function(){
+  return {
+    restrict: 'E',
+    templateUrl: 'components/alignFragListItem.html',
+    scope: {
+      item: '='
+    }
+  }
+})

@@ -14,6 +14,47 @@ angular.module('fabfrag.home', ['ngRoute'])
   	
     $timeout(function(){
       $scope.loading = false
+
+      // Dummy data
+      $scope.items = [
+        {
+          alignment: 0.1,
+          fragmentation: {
+            A: 0,
+            B: 0.1,
+            C: 0,
+            D: 0.3
+          },
+          shortName: 'Loi Maquereau',
+          tags: [
+            'tag 1',
+            'tag 2'
+          ],
+          dates: {
+            start: '2018-01-28',
+            end: '2018-06-28'
+          }
+        },
+        {
+          alignment: 0.3,
+          fragmentation: {
+            A: 0.2,
+            B: 0.05,
+            C: 0.01,
+            D: 0.02
+          },
+          shortName: 'Loi Sardine',
+          tags: [
+          ],
+          dates: {
+            start: '2018-01-28',
+            end: '2018-06-28'
+          }
+        }
+      ]
+
+      
+
     }, 500)
 
 
