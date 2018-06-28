@@ -18,6 +18,7 @@ window.d3 = d3;
 // Requiring own modules
 require('./views/home.js');
 require('./views/network.js');
+require('./components/sigmaNetwork.js');
 
 // Declare app level module which depends on views, and components
 angular.module('fabfrag', [
@@ -25,7 +26,8 @@ angular.module('fabfrag', [
   'ngSanitize',
   'ngMaterial',
   'fabfrag.home',
-  'fabfrag.network'
+  'fabfrag.network',
+  'fabfrag.sigmaNetworkComponent'
 ]).
 config(function($routeProvider, $mdThemingProvider) {
   $routeProvider.otherwise({redirectTo: '/'});
