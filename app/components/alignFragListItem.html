@@ -1,14 +1,22 @@
 <div layout="row" layout-fill>
 	<div flex="25">
-		{{item.alignment}}
+		<div alignement-chart layout-fill alignement="item.alignement"></div>
 	</div>
 	<div flex="35">
 		{{item.fragmentation}}
 	</div>
-	<div flex>
+	<div flex layout="column">
 		{{item.shortName}}
 	</div>
-	<div flex="15">
-		{{item.dates}}
+	<div layout="column" flex="15" style="padding: 6px 0px">
+		<div layout="column">
+			<small style="opacity: 0.6">dépot</small>
+			{{item.dates.depot}}
+		</div>
+		<div flex></div>
+		<div layout="column">
+			<small style="opacity: 0.6">promulgation</small>
+			{{item.dates.promulgation}}
+		</div>
 	</div>
 </div>

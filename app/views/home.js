@@ -18,7 +18,7 @@ angular.module('fabfrag.home', ['ngRoute'])
       // Dummy data
       $scope.items = [
         {
-          alignment: 0.1,
+          alignement: 0.6,
           fragmentation: {
             A: 0,
             B: 0.1,
@@ -31,12 +31,12 @@ angular.module('fabfrag.home', ['ngRoute'])
             'tag 2'
           ],
           dates: {
-            start: '2018-01-28',
-            end: '2018-06-28'
+            depot: '2018-01-28',
+            promulgation: '2018-06-28'
           }
         },
         {
-          alignment: 0.3,
+          alignement: 0.3,
           fragmentation: {
             A: 0.2,
             B: 0.05,
@@ -47,13 +47,13 @@ angular.module('fabfrag.home', ['ngRoute'])
           tags: [
           ],
           dates: {
-            start: '2018-01-28',
-            end: '2018-06-28'
+            depot: '2018-01-28',
+            promulgation: '2018-06-28'
           }
         }
       ]
 
-      
+
 
     }, 500)
 

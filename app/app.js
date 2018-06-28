@@ -64,3 +64,98 @@ config(function($routeProvider, $mdThemingProvider) {
     }
   }
 })
+
+.directive('alignementChart', function($timeout, $filter){
+  return {
+    restrict: 'A',
+    template: '<small layout="column" layout-align="center center" style="opacity:0.5;">loading</small>',
+    scope: {
+      alignement: '='
+    },
+    link: function($scope, el, attrs) {
+      var container = el[0]
+
+      $scope.$watch('alignement', redraw)
+      window.addEventListener('resize', redraw)
+
+			$scope.$on('$destroy', function(){
+        window.removeEventListener('resize', redraw)
+      })
+
+      function redraw(){
+        $timeout(function(){
+	        container.innerHTML = '';
+
+	        var settings = {}
+	        settings.label_in_out_threshold = 0.5
+	        settings.label_y_offset = 4
+	        settings.label_font_family = 'Quicksand, sans-serif'
+          settings.label_font_weight = '400'
+          settings.label_font_size = '14px'
+
+	        var oob
+
+          // set the dimensions and margins of the graph
+					var margin = {top: 0, right: 0, bottom: 0, left: 0},
+					    width = container.offsetWidth - margin.left - margin.right,
+					    height = container.offsetHeight - margin.top - margin.bottom;
+
+					// set the ranges
+					var y = d3.scaleLinear()
+					          .range([height, 0])
+
+					var x = d3.scaleLinear()
+					          .range([0, width]);
+					          
+					var svg = d3.select(container).append('svg')
+					    .attr('width', width + margin.left + margin.right)
+					    .attr('height', height + margin.top + margin.bottom)
+					  .append('g')
+					    .attr('transform', 
+					          'translate(' + margin.left + ',' + margin.top + ')');
+
+				  // Scale the range of the data in the domains
+					x.domain([0, 1])
+				  y.domain([0, 1])
+
+				  // append the rectangles for the bar chart
+				  svg.append('rect')
+				      .attr('width', function(d) {return x($scope.alignement) } )
+				      .attr('y', y(1))
+				      .attr('height', y(0))
+				      .attr('fill', 'rgba(40, 30, 30, 0.8)')
+
+				  // Text labels
+				  var labels =svg.append('text')
+				      .attr('x', function(d) {
+				      	if (x($scope.alignement) > width * settings.label_in_out_threshold) {
+				      		return x($scope.alignement) - 3 
+				      	} else {
+				      		return x($scope.alignement) + 3
+				      	}
+				      })
+				      .attr('y', function(d) { return y(0.5) + settings.label_y_offset })
+				      .text( function (d) { return $filter('number')($scope.alignement) })
+              .attr('text-anchor', function(d,i) {
+				      	if (x($scope.alignement) > width * settings.label_in_out_threshold) {
+				      		return 'end' 
+				      	} else {
+				      		return 'start'
+				      	}
+				      })
+              .attr('font-family', settings.label_font_family)
+              .attr('font-weight', settings.label_font_weight)
+              .attr('font-size', settings.label_font_size)
+              .attr('fill', function(d,i) {
+				      	if (x($scope.alignement) > width * settings.label_in_out_threshold) {
+				      		return 'white' 
+				      	} else {
+				      		return 'black'
+				      	}
+				      })
+        })
+      }
+    }
+  }
+})
+
