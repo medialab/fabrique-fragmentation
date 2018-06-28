@@ -256,7 +256,7 @@ config(function($routeProvider, $mdThemingProvider) {
     restrict: 'E',
     templateUrl: 'components/networkViewSelector.html',
     scope: {
-      selected: '=',
+      selectedView: '=',
       view: "="
     },
     link: function($scope, el, attrs) {
