@@ -94,7 +94,7 @@ config(function($routeProvider, $mdThemingProvider) {
           settings.label_font_size = '14px'
 
           // set the dimensions and margins of the graph
-					var margin = {top: 0, right: 0, bottom: 0, left: 0},
+					var margin = {top: 1.5, right: 0, bottom: 1.5, left: 0},
 					    width = container.offsetWidth - margin.left - margin.right,
 					    height = container.offsetHeight - margin.top - margin.bottom;
 

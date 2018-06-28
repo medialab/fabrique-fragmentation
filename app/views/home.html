@@ -29,9 +29,22 @@
     </div>
     <div flex>
       <md-virtual-repeat-container layout-fill>
-        <div md-virtual-repeat="item in items" style="height: 100px">
-          <align-frag-list-item item="item" layout-fill></align-frag-list-item>
-        </div>
+        <md-list
+          md-colors="{
+            'background': 'default-background-100'
+          }"
+        >
+          <md-list-item
+            md-virtual-repeat="item in items"
+            md-item-size="100"
+            ng-href="#!/gaga"
+            flex
+          >
+            <div style="height: 100px; line-height: initial;" flex>
+              <align-frag-list-item item="item" layout-fill></align-frag-list-item>
+            </div>
+          </md-list-item>
+        </md-list>
       </md-virtual-repeat-container>
     </div>
   </div>
