@@ -17,13 +17,15 @@ window.d3 = d3;
 
 // Requiring own modules
 require('./views/home.js');
+require('./views/network.js');
 
 // Declare app level module which depends on views, and components
 angular.module('fabfrag', [
   'ngRoute',
   'ngSanitize',
   'ngMaterial',
-  'fabfrag.home'
+  'fabfrag.home',
+  'fabfrag.network'
 ]).
 config(function($routeProvider, $mdThemingProvider) {
   $routeProvider.otherwise({redirectTo: '/'});

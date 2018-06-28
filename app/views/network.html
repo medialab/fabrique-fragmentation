@@ -1,0 +1,65 @@
+
+<!-- Loading -->
+<div layout="column" layout-fill ng-if="loading" layout-align="center center">
+  <md-progress-circular
+    md-diameter="42"
+    md-mode="indeterminate"
+  ></md-progress-circular>
+</div>
+
+<!-- Loaded -->
+<div layout="column" layout-fill ng-if="!loading" md-colors="{'color':'default-primary'}">
+
+  <div layout="row" style="height: 140px; z-index: 1" class="md-whiteframe-4dp" md-colors="{'background-color':'default-primary'}">
+    <!-- <div style="width: 100px">
+      TODO: Loi précédente
+    </div> -->
+    <div layout="column" flex>
+      <div flex="33" layout="column" layout-align="center center">
+        <md-button>
+          PROJET DE LOI
+        </md-button>
+      </div>
+      <div flex="33" layout="row" md-colors="{'background-color':'default-primary-500-0.8'}">
+        <div ng-repeat="lecture in data.lectures" flex layout="column" layout-align="center center">
+          <md-button>
+            {{lecture}}
+          </md-button>
+        </div>
+      </div>
+      <div flex="33" layout="column" layout-align="center center">
+        <md-button class="md-default">
+          <md-icon style="color: #FFF">filter_list</md-icon>
+          Filtrer par articles
+        </md-button>
+      </div>
+    </div>
+    <!-- <div style="width: 100px">
+      TODO: Loi suivante
+    </div> -->
+  </div>
+
+  <div layout="row" flex>
+    <div layout="column" layout-align="center" style="width: 140px">
+      <div layout="column" layout-align="center center" style="height: 140px;">
+        CONSENSUS
+      </div>
+      <div layout="column" layout-align="center center" style="height: 140px;">
+        HEMICYCLE
+      </div>
+      <div layout="column" layout-align="center center" style="height: 140px;">
+        RESEAU
+      </div>
+      <div layout="column" layout-align="center center" style="height: 140px;">
+        FRAGMENTATION
+      </div>
+    </div>
+
+    <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF">
+    </div>
+
+    <div layout="column" layout-align="center" ng-if="showDetails" style="width: 180px">
+    </div>
+  </div>
+
+</div>
