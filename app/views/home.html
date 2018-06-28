@@ -8,7 +8,7 @@
 </div>
 
 <!-- Loaded -->
-<div layout="column" layout-fill ng-if="!loading" md-colors="{'color':'default-primary'}">
+<div layout="column" layout-fill ng-if="!loading" md-colors="{'background-color':'default-primary-50', 'color':'default-primary-600'}">
 
   <!-- HEADER -->
   <div style="height: 100px" class="md-padding">
@@ -28,11 +28,9 @@
       LIST HEADER
     </div>
     <div flex>
-      <md-virtual-repeat-container layout-fill style="background-color: #FFF">
+      <md-virtual-repeat-container layout-fill md-colors="{'background':'default-background-A100-0.2'}">
         <md-list
-          md-colors="{
-            'background': 'default-background-50-0.2'
-          }"
+          md-colors="{'background':'default-background-A100-0.8'}"
         >
           <md-list-item
             md-virtual-repeat="item in items"

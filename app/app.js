@@ -42,7 +42,7 @@ config(function($routeProvider, $mdThemingProvider) {
       'default': '300'
     })
     .warnPalette('orange')
-    .backgroundPalette('brown', {
+    .backgroundPalette('grey', {
       'default': '50'
     })
 })

@@ -4,14 +4,14 @@
 <div
 	style="height: 140px;"
 	ng-click="selectedView = view"
+	ng-class="{'md-whiteframe-3dp': selectedView == view}"
 >
 	<md-content
-		style="width: 100%; overflow: hidden; cursor: pointer"
+		style="width: 100%; overflow: hidden; cursor: pointer; z-index: 6"
 		layout="column"
 		layout-align="center center"
 		md-ink-ripple
 		md-colors="{background: selectedView == view ? 'default-background-A100' : 'default-background-50-0.0'}"
-		ng-class="{'md-whiteframe-3dp': isSelected, ontop: isSelected}"
 		layout-fill
 	>
 		<div>

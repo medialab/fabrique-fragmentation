@@ -8,9 +8,9 @@
 </div>
 
 <!-- Loaded -->
-<div layout="column" layout-fill ng-if="!loading" md-colors="{'color':'default-primary'}">
+<div layout="column" layout-fill ng-if="!loading" md-colors="{'background-color':'default-primary-50', 'color':'default-primary-600'}">
 
-  <div layout="row" style="height: 140px; z-index: 1" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
+  <div layout="row" style="height: 140px; z-index: 10" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
     <!-- <div style="width: 100px">
       TODO: Loi précédente
     </div> -->
@@ -63,7 +63,7 @@
       </network-view-selector>
     </div>
 
-    <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF">
+    <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF; z-index: 5">
     </div>
 
     <div layout="column" layout-align="center" ng-if="showDetails" style="width: 180px">
