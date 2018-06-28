@@ -199,7 +199,7 @@ config(function($routeProvider, $mdThemingProvider) {
           settings.label_font_size = '14px'
 
           // set the dimensions and margins of the graph
-					var margin = {top: 18, right: 12, bottom: 18, left: 0},
+					var margin = {top: 18, right: 6, bottom: 18, left: 6},
 					    width = container.offsetWidth - margin.left - margin.right,
 					    height = container.offsetHeight - margin.top - margin.bottom;
 					// set the ranges
@@ -247,6 +247,19 @@ config(function($routeProvider, $mdThemingProvider) {
               .attr('font-size', settings.label_font_size)
         })
       }
+    }
+  }
+})
+
+.directive('networkViewSelector', function($timeout){
+  return {
+    restrict: 'E',
+    templateUrl: 'components/networkViewSelector.html',
+    scope: {
+      selected: '=',
+      view: "="
+    },
+    link: function($scope, el, attrs) {
     }
   }
 })

@@ -41,18 +41,26 @@
 
   <div layout="row" flex>
     <div layout="column" layout-align="center" style="width: 140px">
-      <div layout="column" layout-align="center center" style="height: 140px;">
-        CONSENSUS
-      </div>
-      <div layout="column" layout-align="center center" style="height: 140px;">
-        HEMICYCLE
-      </div>
-      <div layout="column" layout-align="center center" style="height: 140px;">
-        RESEAU
-      </div>
-      <div layout="column" layout-align="center center" style="height: 140px;">
-        FRAGMENTATION
-      </div>
+      <network-view-selector
+        selected="selectedView"
+        view="'consensus'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected="selectedView"
+        view="'hemicycle'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected="selectedView"
+        view="'reseau'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected="selectedView"
+        view="'fragmentation'"
+      >
+      </network-view-selector>
     </div>
 
     <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF">

@@ -11,7 +11,8 @@ angular.module('fabfrag.network', ['ngRoute'])
 
 .controller('NetworkCtrl', function($scope, $timeout, $location) {
   	$scope.loading = true
-  	
+  	$scope.selectedView = 'hemicycle'
+    
     $timeout(function(){
       $scope.loading = false
       $scope.showDetails = false
