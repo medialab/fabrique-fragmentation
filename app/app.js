@@ -183,10 +183,15 @@ config(function($routeProvider, $mdThemingProvider) {
 	        for (label in $scope.fragmentation) {
 	        	data.push({label:label, count:$scope.fragmentation[label]})
 	        }
+	        var max = d3.max(data, function(d){return d.count})
+	        data.forEach(function(d){
+        		d.display = Math.abs(d.count-max) < 0.01
+	        })
 
 	        var settings = {}
 	        settings.column_spacing = 6
 	        settings.bar_thickness = 2
+	        settings.label_y_offset = -6
 	        settings.label_font_family = 'Quicksand, sans-serif'
           settings.label_font_weight = '400'
           settings.label_font_size = '14px'
@@ -229,6 +234,15 @@ config(function($routeProvider, $mdThemingProvider) {
 					      .attr('fill', '#F00')
 				  })
 
+				  // Text labels
+				  var labels = columns.enter().append('text')
+				      .attr('x', function(d, i) { return x(i) + x.bandwidth()/2 })
+				      .attr('y', function(d) { return (height - y(d.count))/2 + settings.label_y_offset })
+				      .text( function (d) { if (d.display) { return d.label } else { return '' } })
+              .attr('text-anchor', 'middle')
+							.attr('font-family', settings.label_font_family)
+              .attr('font-weight', settings.label_font_weight)
+              .attr('font-size', settings.label_font_size)
         })
       }
     }
