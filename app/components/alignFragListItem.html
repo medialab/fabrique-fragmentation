@@ -5,16 +5,16 @@
 	<div flex="35">
 		{{item.fragmentation}}
 	</div>
-	<div flex layout="column">
-		{{item.shortName}}
+	<div flex layout="column" layout-align="center">
+		<strong>{{item.shortName}}</strong>
+		<small style="opacity: 0.6">
+			{{item.tags.join(", ")}}
+		</small>
 	</div>
-	<div layout="column" flex="15" style="padding: 6px 0px">
-		<div layout="column">
+	<div layout="column" flex="15" layout-align="center">
 			<small style="opacity: 0.6">dépot</small>
 			{{item.dates.depot}}
-		</div>
-		<div flex></div>
-		<div layout="column">
+			<div style="height: 6px"></div>
 			<small style="opacity: 0.6">promulgation</small>
 			{{item.dates.promulgation}}
 		</div>
