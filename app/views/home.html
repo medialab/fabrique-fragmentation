@@ -1,3 +1,4 @@
+
 <!-- Loading -->
 <div layout="column" layout-fill ng-if="loading" layout-align="center center">
   <md-progress-circular
@@ -7,8 +8,22 @@
 </div>
 
 <!-- Loaded -->
-<md-content class="md-padding" layout="column" layout-fill ng-if="!loading">
+<div layout="column" layout-fill ng-if="!loading">
 
-  Hello World
+  <!-- HEADER -->
+  <div style="height: 100px" class="md-padding">
+    <strong>Alignement et Fragmentation</strong>
+    <br>
+    des groupes politiques par les co-signatures d'amendements
+  </div>
 
-</md-content>
+  <!-- SORT & SEARCH -->
+  <div style="height: 120px">
+    TODO: Sort and search
+  </div>
+
+  <!-- LIST -->
+  <div flex>
+    TODO: List
+  </div>
+</div>

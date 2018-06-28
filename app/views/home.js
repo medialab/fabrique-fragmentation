@@ -12,6 +12,9 @@ angular.module('fabfrag.home', ['ngRoute'])
 .controller('HomeCtrl', function($scope, $timeout, $location) {
   	$scope.loading = true
   	
+    $timeout(function(){
+      $scope.loading = false
+    }, 500)
 
 
 });
