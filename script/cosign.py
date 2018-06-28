@@ -49,7 +49,7 @@ with connection.cursor() as cursor:
             
             liste_liste_signataires = []
             groupes_nb_internal_cosign = defaultdict(int)
-            groupes_nb_parlementaire = defaultdict(int)
+            groupes_nb_parlementaire = defaultdict(list)
             inter_groupe = 0
             
             for uniqueAmds,duplicates in itertools.groupby(amds,key=lambda a : a['content_md5'] ):
@@ -68,7 +68,7 @@ with connection.cursor() as cursor:
                 #signataires = list({parlementaire['id']:parlementaire for d in duplicates for parlementaire in parlementairesIndex[d['id']]}.values())
                 
                 for s in signataires:
-                    groupes_nb_parlementaire[s['groupe']]+=1
+                    groupes_nb_parlementaire[s['groupe']].append(s)
                 for (p1, p2) in itertools.combinations(signataires,2):
                     if p1['groupe'] != p2['groupe']:
                         inter_groupe += 1
@@ -76,6 +76,8 @@ with connection.cursor() as cursor:
                         groupes_nb_internal_cosign[p1['groupe']] += 1
 
                 liste_liste_signataires.append(signataires)
+            # count unique parlementaire
+            groupes_nb_parlementaire = {g: len({p['id']:p for p in ps}.values()) for g,ps in groupes_nb_parlementaire.items()}
             output[ids_dossier_an[texteloi_id]][texteloi_id][article]={
                 'groups':{g:{'nc':cosign, 'np':groupes_nb_parlementaire[g]} for g,cosign in groupes_nb_internal_cosign.items()},
                 'inter_cosign':inter_groupe,
