@@ -93,8 +93,6 @@ config(function($routeProvider, $mdThemingProvider) {
           settings.label_font_weight = '400'
           settings.label_font_size = '14px'
 
-	        var oob
-
           // set the dimensions and margins of the graph
 					var margin = {top: 0, right: 0, bottom: 0, left: 0},
 					    width = container.offsetWidth - margin.left - margin.right,
@@ -159,3 +157,74 @@ config(function($routeProvider, $mdThemingProvider) {
   }
 })
 
+.directive('fragmentationChart', function($timeout, $filter){
+  return {
+    restrict: 'A',
+    template: '<small layout="column" layout-align="center center" style="opacity:0.5;">loading</small>',
+    scope: {
+      fragmentation: '='
+    },
+    link: function($scope, el, attrs) {
+      var container = el[0]
+
+      $scope.$watch('fragmentation', redraw)
+      window.addEventListener('resize', redraw)
+
+			$scope.$on('$destroy', function(){
+        window.removeEventListener('resize', redraw)
+      })
+
+      function redraw(){
+        $timeout(function(){
+	        container.innerHTML = ''
+
+	        var data = []
+	        var label
+	        for (label in $scope.fragmentation) {
+	        	data.push({label:label, count:$scope.fragmentation[label]})
+	        }
+
+	        var settings = {}
+	        settings.bar_spacing = 6
+	        settings.label_font_family = 'Quicksand, sans-serif'
+          settings.label_font_weight = '400'
+          settings.label_font_size = '14px'
+
+          // set the dimensions and margins of the graph
+					var margin = {top: 3, right: 12, bottom: 3, left: 0},
+					    width = container.offsetWidth - margin.left - margin.right,
+					    height = container.offsetHeight - margin.top - margin.bottom;
+					// set the ranges
+					var y = d3.scaleLinear()
+					          .range([0, height])
+
+					var x = d3.scaleBand()
+					          .range([0, width])
+					          
+					var svg = d3.select(container).append('svg')
+					    .attr('width', width + margin.left + margin.right)
+					    .attr('height', height + margin.top + margin.bottom)
+					  .append('g')
+					    .attr('transform', 
+					          'translate(' + margin.left + ',' + margin.top + ')');
+
+				  // Scale the range of the data in the domains
+					x.domain(data.map(function(d, i) { return i }))
+				  y.domain([0, 1])
+
+				  var columns = svg.selectAll('.col')
+				      .data(data)
+				  
+				  columns.enter().append('rect')
+				      .attr('class', 'col')
+				      .attr('x', function(d, i) { return x(i) + settings.bar_spacing/2 })
+				      .attr('width', function(d) { return x.bandwidth() - settings.bar_spacing } )
+				      .attr('y', function(d) { return (height - y(d.count))/2 })
+				      .attr('height', function(d) { return y(d.count) })
+				      .attr('fill', 'rgba(160, 160, 160, 0.5)')
+
+        })
+      }
+    }
+  }
+})
