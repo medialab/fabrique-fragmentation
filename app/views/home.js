@@ -38,7 +38,7 @@ angular.module('fabfrag.home', ['ngRoute'])
         {
           alignement: 0.3,
           fragmentation: {
-            A: 0.2,
+            A: 1.0,
             B: 0.05,
             C: 0.01,
             D: 0.02

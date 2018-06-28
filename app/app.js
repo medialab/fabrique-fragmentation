@@ -185,13 +185,14 @@ config(function($routeProvider, $mdThemingProvider) {
 	        }
 
 	        var settings = {}
-	        settings.bar_spacing = 6
+	        settings.column_spacing = 6
+	        settings.bar_thickness = 2
 	        settings.label_font_family = 'Quicksand, sans-serif'
           settings.label_font_weight = '400'
           settings.label_font_size = '14px'
 
           // set the dimensions and margins of the graph
-					var margin = {top: 3, right: 12, bottom: 3, left: 0},
+					var margin = {top: 18, right: 12, bottom: 18, left: 0},
 					    width = container.offsetWidth - margin.left - margin.right,
 					    height = container.offsetHeight - margin.top - margin.bottom;
 					// set the ranges
@@ -214,14 +215,19 @@ config(function($routeProvider, $mdThemingProvider) {
 
 				  var columns = svg.selectAll('.col')
 				      .data(data)
+
+				  var col = columns.enter().append('g')
 				  
-				  columns.enter().append('rect')
-				      .attr('class', 'col')
-				      .attr('x', function(d, i) { return x(i) + settings.bar_spacing/2 })
-				      .attr('width', function(d) { return x.bandwidth() - settings.bar_spacing } )
-				      .attr('y', function(d) { return (height - y(d.count))/2 })
-				      .attr('height', function(d) { return y(d.count) })
-				      .attr('fill', 'rgba(160, 160, 160, 0.5)')
+				  var bars = [0, 0.25, 0.5, 0.75, 1]
+				  bars.forEach(function(b){
+					  col.append('rect')
+					  		.attr('class', 'col')
+					      .attr('x', function(d, i) { return x(i) + settings.column_spacing/2 })
+					      .attr('width', function(d) { return x.bandwidth() - settings.column_spacing } )
+					      .attr('y', function(d) { return (height - y(d.count))/2 + b * y(d.count) - settings.bar_thickness / 2 })
+					      .attr('height', function(d) { return settings.bar_thickness })
+					      .attr('fill', '#F00')
+				  })
 
         })
       }
