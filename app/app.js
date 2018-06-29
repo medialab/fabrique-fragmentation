@@ -301,7 +301,8 @@ config(function($routeProvider, $mdThemingProvider) {
     restrict: 'E',
     templateUrl: 'components/alignFragListItem.html',
     scope: {
-      item: '='
+      item: '=',
+      groups: '='
     }
   }
 })
@@ -403,7 +404,8 @@ config(function($routeProvider, $mdThemingProvider) {
     restrict: 'A',
     template: '<small layout="column" layout-align="center center" style="opacity:0.5;">loading</small>',
     scope: {
-      fragmentation: '='
+      fragmentation: '=',
+      groups: '='
     },
     link: function($scope, el, attrs) {
       var container = el[0]
@@ -427,6 +429,11 @@ config(function($routeProvider, $mdThemingProvider) {
 	        var max = d3.max(data, function(d){return d.count})
 	        data.forEach(function(d){
         		d.display = Math.abs(d.count-max) < 0.01
+	        })
+
+	        // Sort
+	        data.sort(function(a, b){
+	        	return $scope.groups[a.label].order - $scope.groups[b.label].order
 	        })
 
 	        var settings = {}
@@ -472,7 +479,7 @@ config(function($routeProvider, $mdThemingProvider) {
 					      .attr('width', function(d) { return x.bandwidth() - settings.column_spacing } )
 					      .attr('y', function(d) { return (height - y(d.count))/2 + b * y(d.count) - settings.bar_thickness / 2 })
 					      .attr('height', function(d) { return settings.bar_thickness })
-					      .attr('fill', '#F00')
+					      .attr('fill', function(d){ return 'rgb(' + $scope.groups[d.label].couleur + ')'})
 				  })
 
 				  // Text labels
