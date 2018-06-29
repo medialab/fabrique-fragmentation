@@ -19,7 +19,6 @@ angular.module('fabfrag.network', ['ngRoute'])
     dataStore.getCosignData().then(function(data){
       $timeout(function(){
         $scope.loading = false
-        console.log(data)
 
         $scope.projetData = data[$routeParams.projet_id]
         
@@ -31,8 +30,20 @@ angular.module('fabfrag.network', ['ngRoute'])
         } else {
           alert(':-(\nOups, le projet' + $routeParams.projet_id + ' ne se trouve pas dans les données...')
         }
+
+        // Crunch the data
+        console.log('projet data', $scope.projetData)
+
       })
     })
+
+    $scope.$watch('lectureFocus', updateNetwork)
+
+    function updateNetwork() {
+      $timeout(function(){
+
+      })
+    }
 
     /*$timeout(function(){
       $scope.loading = false

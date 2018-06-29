@@ -85,44 +85,4 @@ angular.module('fabfrag.home', ['ngRoute'])
       })
     })
 
-    function computeIndexes(d) {
-      // Sum of internal cosignatures
-      var sum_of_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].nc })
-
-      // Sum of internal potential cosignatures
-      var sum_of_potential_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){
-        var count = d.groups[group].np
-        return count * (count - 1)
-      })
-
-      // Sum of parlementaires
-      var sum_of_parlementaires = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].np })
-      
-      // Cosignatures potential: if every pair of parlementaires consigned once (and only once)
-      var cosignatures_potential = sum_of_parlementaires * (sum_of_parlementaires - 1)
-
-      var sum_of_potential_external_cosignatures = cosignatures_potential - sum_of_internal_cosignatures
-
-      // Sum of cosignatures
-      var sum_cosignatures = d.inter_cosign + sum_of_internal_cosignatures
-
-      var internal_density = sum_of_internal_cosignatures / sum_of_potential_internal_cosignatures
-      var external_density = d.inter_cosign / sum_of_potential_external_cosignatures
-
-      var groups_fragmentation = {}
-      var group_id
-      for (group_id in d.groups) {
-        var g = d.groups[group_id]
-        var group_density = g.nc / (g.np * (g.np - 1))
-        groups_fragmentation[group_id] = Math.max(0, 1 - group_density)
-      }
-
-      return {
-        alignement: external_density,
-        fragmentation: groups_fragmentation
-      }
-
-
-    }
-
 })

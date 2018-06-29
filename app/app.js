@@ -57,7 +57,7 @@ config(function($routeProvider, $mdThemingProvider) {
 })
 
 // Services
-.factory('dataStore', function($http, $timeout){
+.factory('dataStore', function($http, $timeout, dataCruncher){
   var ns = {}     // namespace
 
   ns.cosignData = undefined
@@ -69,12 +69,116 @@ config(function($routeProvider, $mdThemingProvider) {
 	  	} else {
 	  		$http.get('data/cosign.json').then(function(r){
 	  			ns.cosignData = r.data
+	  			dataCruncher.consolidateSourceData(r.data)
 	  			resolve(r.data)
 	  		}, function(r){
 	  			reject(r)
 	  		})
 	  	}
 	  })
+  }
+
+  return ns
+})
+
+.factory('dataCruncher', function(){
+  var ns = {}     // namespace
+
+  ns.consolidateSourceData = function(data){
+  	console.log('CONSOLIDATE:', data)
+
+  	// Iterate over:
+  	// Projet de loi
+  	var projet_id
+    for (projet_id in data) {
+      var projet = data[projet_id]
+
+      // Iterate over:
+      // Projet de loi > Lecture (texte)
+      var lecture_id
+      for (lecture_id in projet) {
+        var lecture = projet[lecture_id]
+
+        // Iterate over:
+        // Projet de loi > Lecture (texte) > Article
+        var article_id
+        for (article_id in lecture) {
+          var article = lecture[article_id]
+          
+          // Ignore article if...
+          // ...it has no signatures d'amendements
+          var amendement_signatures_count = d3.sum(article.sign_amend.map(function(d){ return d.length }))
+          // ...it has no groups
+          var groups_count = d3.keys(article.groups).length
+          if (amendement_signatures_count == 0 || groups_count == 0) {
+          	article.ignore = true
+          } else {
+	          // Compute the indexes of the article
+	          ns.consolidateArticle(article)
+          }
+        }
+
+/*        // Average indexes to the lecture level
+        lecture.alignement = d3.mean(d3.keys(lecture), function(d){
+        	return lecture[d].alignement
+        })
+        lecture.fragmentation = {}
+        d3.keys(lecture).forEach(function(d){ // get the keys
+        	d3.keys(lecture[d].fragmentation).forEach(function(k){
+        		lecture.fragmentation[k] = true
+        	})
+        })
+        d3.keys(lecture.fragmentation).forEach(function(k){ // get the averages by key
+        	lecture.fragmentation[k] = d3.mean(d3.keys(lecture), function(d){
+        		console.log('>', d, lecture[d])
+        		// return 1//!lecture[d].ignore && lecture[d].fragmentation[k]
+        	})
+        })
+        console.log('Lecture', lecture, 'keys', d3.keys(lecture))
+*/
+      }
+    }
+  }
+
+  // Compute the indexes for an article (of a lecture of a project)
+  ns.consolidateArticle = function(d) {
+  	// d.groups /*be like*/ LR: {nc:630, np:36}
+   	// d.inter_cosign /*be like*/ 123
+    // d.sign_amend /*be like*/ List of lists of {id: 200, groupe: "LR"}
+  	
+  	// Sum of internal cosignatures
+    var sum_of_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].nc })
+
+    // Sum of internal potential cosignatures
+    var sum_of_potential_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){
+      var count = d.groups[group].np
+      return count * (count - 1)
+    })
+
+    // Sum of parlementaires
+    var sum_of_parlementaires = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].np })
+    
+    // Cosignatures potential: if every pair of parlementaires consigned once (and only once)
+    var cosignatures_potential = sum_of_parlementaires * (sum_of_parlementaires - 1)
+
+    var sum_of_potential_external_cosignatures = cosignatures_potential - sum_of_internal_cosignatures
+
+    // Sum of cosignatures
+    var sum_cosignatures = d.inter_cosign + sum_of_internal_cosignatures
+
+    var internal_density = sum_of_internal_cosignatures / sum_of_potential_internal_cosignatures
+    var external_density = d.inter_cosign / sum_of_potential_external_cosignatures
+
+    var groups_fragmentation = {}
+    var group_id
+    for (group_id in d.groups) {
+      var g = d.groups[group_id]
+      var group_density = g.nc / (g.np * (g.np - 1))
+      groups_fragmentation[group_id] = Math.max(0, 1 - group_density)
+    }
+
+    d.alignement = external_density
+    d.fragmentation = groups_fragmentation
   }
 
   return ns
