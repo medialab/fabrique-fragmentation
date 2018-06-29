@@ -61,6 +61,7 @@ config(function($routeProvider, $mdThemingProvider) {
   var ns = {}     // namespace
 
   ns.cosignData = undefined
+  ns.indexes = undefined
 
   ns.getCosignData = function(){
   	return new Promise(function(resolve, reject) {
@@ -69,13 +70,18 @@ config(function($routeProvider, $mdThemingProvider) {
 	  	} else {
 	  		$http.get('data/cosign.json').then(function(r){
 	  			ns.cosignData = r.data
-	  			dataCruncher.consolidateSourceData(r.data)
+	  			ns.indexes = dataCruncher.consolidateSourceData(r.data)
+	  			console.log('Indexes:', ns.indexes)
 	  			resolve(r.data)
 	  		}, function(r){
 	  			reject(r)
 	  		})
 	  	}
 	  })
+  }
+
+  ns.getIndexes = function(){
+  	return ns.indexes
   }
 
   return ns
@@ -85,6 +91,7 @@ config(function($routeProvider, $mdThemingProvider) {
   var ns = {}     // namespace
 
   ns.consolidateSourceData = function(data){
+  	var indexes = {projets:{}}
   	console.log('CONSOLIDATE:', data)
 
   	// Iterate over:
@@ -92,23 +99,26 @@ config(function($routeProvider, $mdThemingProvider) {
   	var projet_id
     for (projet_id in data) {
       var projet = data[projet_id]
+      indexes.projets[projet_id] = {lectures:{}, articles:{}}
 
       // Iterate over:
       // Projet de loi > Lecture (texte)
       var lecture_id
       for (lecture_id in projet) {
         var lecture = projet[lecture_id]
+	      indexes.projets[projet_id].lectures[lecture_id] = {articles:{}}
 
         // Iterate over:
         // Projet de loi > Lecture (texte) > Article
         var article_id
         for (article_id in lecture) {
           var article = lecture[article_id]
+		      indexes.projets[projet_id].articles[article_id] = {}
           
           // Ignore article if...
           // ...it has no signatures d'amendements
           var amendement_signatures_count = d3.sum(article.sign_amend.map(function(d){ return d.length }))
-          // ...it has no groups
+          // ...it has no groups (all amendements signed by 0-1 person)
           var groups_count = d3.keys(article.groups).length
           if (amendement_signatures_count == 0 || groups_count == 0) {
           	article.ignore = true
@@ -118,26 +128,82 @@ config(function($routeProvider, $mdThemingProvider) {
           }
         }
 
-/*        // Average indexes to the lecture level
-        lecture.alignement = d3.mean(d3.keys(lecture), function(d){
+        // Aggregate indexes to the LECTURE level
+        var lectureIndex = indexes.projets[projet_id].lectures[lecture_id]
+        lectureIndex.alignement = d3.mean(d3.keys(lecture), function(d){
         	return lecture[d].alignement
         })
-        lecture.fragmentation = {}
+        lectureIndex.amendements = d3.sum(d3.keys(lecture), function(d){
+        	return lecture[d].amendements
+        })
+        lectureIndex.fragmentation = {}
         d3.keys(lecture).forEach(function(d){ // get the keys
         	d3.keys(lecture[d].fragmentation).forEach(function(k){
-        		lecture.fragmentation[k] = true
+        		lectureIndex.fragmentation[k] = true
         	})
         })
-        d3.keys(lecture.fragmentation).forEach(function(k){ // get the averages by key
-        	lecture.fragmentation[k] = d3.mean(d3.keys(lecture), function(d){
-        		console.log('>', d, lecture[d])
-        		// return 1//!lecture[d].ignore && lecture[d].fragmentation[k]
+        d3.keys(lectureIndex.fragmentation).forEach(function(k){ // get the averages by key
+        	lectureIndex.fragmentation[k] = d3.mean(d3.keys(lecture), function(d){
+        		return !lecture[d].ignore && lecture[d].fragmentation[k]
         	})
         })
-        console.log('Lecture', lecture, 'keys', d3.keys(lecture))
-*/
+
       }
+
+      var projetIndex = indexes.projets[projet_id]
+      
+      // Aggregate indexes to the PROJET level
+      projetIndex.alignement = d3.mean(d3.keys(projet), function(d){
+      	return projetIndex.lectures[d].alignement
+      })
+      projetIndex.amendements = d3.sum(d3.keys(projet), function(d){
+      	return projetIndex.lectures[d].amendements
+      })
+      projetIndex.fragmentation = {}
+      d3.keys(projet).forEach(function(d){ // get the keys
+      	d3.keys(projetIndex.lectures[d].fragmentation).forEach(function(k){
+      		projetIndex.fragmentation[k] = true
+      	})
+      })
+      d3.keys(projetIndex.fragmentation).forEach(function(k){ // get the averages by key
+      	projetIndex.fragmentation[k] = d3.mean(d3.keys(projet), function(d){
+      		return projetIndex.lectures[d].fragmentation[k]
+      	})
+      })
+
+      // Aggregate indexes to the ARTICLE level
+      d3.keys(projetIndex.articles).forEach(function(article_id){ // get the indexes by key
+      	var articleIndex = projetIndex.articles[article_id]
+	      articleIndex.alignement = d3.mean(d3.keys(projet), function(lecture_id){
+	      	return projet[lecture_id][article_id].alignement
+	      })
+	      articleIndex.amendements = d3.sum(d3.keys(projet), function(lecture_id){
+	      	return projet[lecture_id][article_id].amendements
+	      })
+
+	      articleIndex.fragmentation = {}
+	      d3.keys(projet).forEach(function(lecture_id){ // get the keys
+	      	d3.keys(projetIndex.lectures[lecture_id].fragmentation).forEach(function(k){
+	      		articleIndex.fragmentation[k] = true
+	      	})
+	      })
+	      d3.keys(articleIndex.fragmentation).forEach(function(k){ // get the averages by key
+	      	articleIndex.fragmentation[k] = d3.mean(d3.keys(projet), function(lecture_id){
+	      		var article = projet[lecture_id][article_id]
+	      		return !article.ignore && article.fragmentation[k]
+	      	})
+	      })
+	      var voidKeys = d3.keys(articleIndex.fragmentation).filter(function(k){
+	      	return articleIndex.fragmentation[k] === undefined
+	      })
+	      voidKeys.forEach(function(k){
+	      	delete articleIndex.fragmentation[k]
+	      })
+      })
+
     }
+
+    return indexes
   }
 
   // Compute the indexes for an article (of a lecture of a project)
@@ -179,6 +245,7 @@ config(function($routeProvider, $mdThemingProvider) {
 
     d.alignement = external_density
     d.fragmentation = groups_fragmentation
+    d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
   }
 
   return ns
