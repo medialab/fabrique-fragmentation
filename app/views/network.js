@@ -3,7 +3,7 @@
 angular.module('fabfrag.network', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/network/', {
+  $routeProvider.when('/network/:projet_id', {
     templateUrl: 'views/network.html',
     controller: 'NetworkCtrl'
   });

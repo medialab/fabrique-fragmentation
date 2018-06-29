@@ -70,6 +70,7 @@ angular.module('fabfrag.home', ['ngRoute'])
 
 
             $scope.items.push({
+              id: projet_id,
               shortName: projet_id,
               date: {
                 depot: 'à faire',
