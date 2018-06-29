@@ -19,11 +19,11 @@
         <md-button ng-click="$parent.lectureFocus = 'none'">
           <md-icon style="color: #FFF" ng-if="lectureFocus == 'none'">radio_button_checked</md-icon>
           <md-icon style="color: #FFF" ng-if="lectureFocus != 'none'">radio_button_unchecked</md-icon>
-          PROJET DE LOI
+          {{structure.projet}}
         </md-button>
       </div>
       <div flex="33" layout="row" md-colors="{'background':'default-primary-500-0.8'}">
-        <div ng-repeat="lecture in data.lectures" flex layout="column" layout-align="center center">
+        <div ng-repeat="lecture in structure.lectures" flex layout="column" layout-align="center center">
           <md-button ng-click="$parent.$parent.lectureFocus = lecture">
             <md-icon style="color: #FFF" ng-if="lectureFocus == lecture">radio_button_checked</md-icon>
             <md-icon style="color: #FFF" ng-if="lectureFocus != lecture">radio_button_unchecked</md-icon>

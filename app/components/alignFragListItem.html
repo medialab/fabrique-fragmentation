@@ -6,12 +6,12 @@
 		<div fragmentation-chart layout-fill fragmentation="item.fragmentation"></div>
 	</div>
 	<div flex layout="column" layout-align="center">
-		<strong>{{item.shortName}}</strong>
+		<strong md-truncate>{{item.shortName}}</strong>
 		<small style="opacity: 0.6">
 			{{item.tags.join(", ")}}
 		</small>
 	</div>
-	<div layout="column" flex="15" layout-align="center" style="font-size: 0.8em">
+	<div layout="column" flex="15" layout-align="center" style="font-size: 0.8em; padding-left: 12px">
 		<div layout="column">
 			<div style="opacity: 0.6; font-size: 0.9em">dépot</div>
 			{{item.dates.depot}}

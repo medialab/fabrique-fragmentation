@@ -3,20 +3,49 @@
 angular.module('fabfrag.network', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/network/', {
+  $routeProvider.when('/network/:projet_id', {
     templateUrl: 'views/network.html',
     controller: 'NetworkCtrl'
   });
 }])
 
-.controller('NetworkCtrl', function($scope, $timeout, $location) {
+.controller('NetworkCtrl', function($scope, $timeout, $location, $routeParams, dataStore) {
   	$scope.loading = true
   	$scope.selectedView = 'hemicycle'
     $scope.showArticles = false
     $scope.showDetails = false
     $scope.lectureFocus = 'none'
 
-    $timeout(function(){
+    dataStore.getCosignData().then(function(data){
+      $timeout(function(){
+        $scope.loading = false
+
+        $scope.projetData = data[$routeParams.projet_id]
+        
+        if ($scope.projetData) {
+          $scope.structure = {
+            projet: $routeParams.projet_id,
+            lectures: d3.keys($scope.projetData).map(function(d){ return 'Lecture '+d })
+          }
+        } else {
+          alert(':-(\nOups, le projet' + $routeParams.projet_id + ' ne se trouve pas dans les données...')
+        }
+
+        // Crunch the data
+        console.log('projet data', $scope.projetData)
+
+      })
+    })
+
+    $scope.$watch('lectureFocus', updateNetwork)
+
+    function updateNetwork() {
+      $timeout(function(){
+
+      })
+    }
+
+    /*$timeout(function(){
       $scope.loading = false
 
       // Dummy data
@@ -66,7 +95,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           }
         }
       ]
-    }, 500)
+    }, 500)*/
 
 
 });
