@@ -161,10 +161,11 @@ angular.module('fabfrag.network', ['ngRoute'])
         var groupe = g.getNodeAttribute(nid, 'groupe')
         groupes_index[groupe] = (groupes_index[groupe] || 0) + 1
       })
+      var tweakCount = function(count){ return Math.sqrt(count) }
       var totalCount = 0
       var groupes = d3.keys(groupes_index).map(function(groupe){
         var count = groupes_index[groupe]
-        totalCount += count
+        totalCount += tweakCount(count)
         return {
           acronyme: groupe,
           count: count,
@@ -177,15 +178,18 @@ angular.module('fabfrag.network', ['ngRoute'])
       groupes_index = {}
       var currentCount = 0
       groupes.forEach(function(groupe){
-        groupe.percent = (currentCount + groupe.count/2) / totalCount
-        currentCount += groupe.count
+        var tweakedCount = tweakCount(groupe.count)
+        groupe.percent = (currentCount + tweakedCount/2) / totalCount
+        currentCount += tweakedCount
         groupes_index[groupe.acronyme] = groupe
       })
       g.nodes().forEach(function(nid){
         var groupe = groupes_index[g.getNodeAttribute(nid, 'groupe')]
         var angle = Math.PI * (1 - groupe.percent)
-        var x = 250 * Math.cos(angle)
-        var y = 250 * Math.sin(angle)
+        var jitterAngle = Math.random() * 2 * Math.PI
+        var jitterRadius = Math.random() * 3 * Math.sqrt(groupe.count)
+        var x = 250 * Math.cos(angle) + jitterRadius * Math.cos(jitterAngle)
+        var y = 250 * Math.sin(angle) + jitterRadius * Math.sin(jitterAngle)
         $scope.coordinates.alignement[nid] = {x:x, y:y}
       })
 
@@ -200,7 +204,7 @@ angular.module('fabfrag.network', ['ngRoute'])
 
       // Compute coordinates: RESEAU
       FA2.assign(g, {
-        iterations: 30,
+        iterations: 5/*30*/,
         settings: {
           barnesHutOptimize: false,
           strongGravityMode: true,
