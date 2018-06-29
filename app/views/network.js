@@ -80,7 +80,13 @@ angular.module('fabfrag.network', ['ngRoute'])
               articleData.sign_amend.forEach(function(cosignataires){
                 // Register parlementaires
                 cosignataires.forEach(function(p){
-                  parlementaires[p.id] = parlementaires[p.id] || {id:p.id, groupe: p.groupe, count: 0}
+                  parlementaires[p.id] = parlementaires[p.id] || {
+                    id: p.id,
+                    label: $scope.nosDeputesData.deputes[p.id].nom,
+                    groupe: p.groupe,
+                    color:'rgb(' + $scope.nosDeputesData.groupes_byAcro[p.groupe].couleur + ')',
+                    count: 0
+                  }
                   parlementaires[p.id].count++
                 })
 
@@ -104,16 +110,15 @@ angular.module('fabfrag.network', ['ngRoute'])
 
         d3.keys(cosignatures).forEach(function(linkid){
           var c = cosignatures[linkid]
-          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#AAA'})
+          var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
+          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#CCC', size: size})
         })
 
         // Add random colors and positions
         g.nodes().forEach(function(nid){
           g.setNodeAttribute(nid, 'x', 100*Math.random())
           g.setNodeAttribute(nid, 'y', 100*Math.random())
-          g.setNodeAttribute(nid, 'label', nid)
           g.setNodeAttribute(nid, 'size', 6)
-          g.setNodeAttribute(nid, 'color', '#666666')
         })
 
         // FA2(g, {iterations: 100})

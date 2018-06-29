@@ -111,7 +111,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             renderer = new Sigma.WebGLRenderer(container, {
               labelFont: "Quicksand",
               labelWeight: '400',
-              labelSize: 12
+              labelSize: 16
             })
             sigma = new Sigma($scope.g, renderer)
 
