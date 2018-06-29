@@ -16,9 +16,9 @@
     </div> -->
     <div layout="column" flex>
       <div flex="33" layout="column" layout-align="center center">
-        <md-button ng-click="$parent.lectureFocus = 'none'">
-          <md-icon style="color: #FFF" ng-if="lectureFocus == 'none'">radio_button_checked</md-icon>
-          <md-icon style="color: #FFF" ng-if="lectureFocus != 'none'">radio_button_unchecked</md-icon>
+        <md-button ng-click="$parent.lectureFocus = ''">
+          <md-icon style="color: #FFF" ng-if="lectureFocus == ''">radio_button_checked</md-icon>
+          <md-icon style="color: #FFF" ng-if="lectureFocus != ''">radio_button_unchecked</md-icon>
           {{structure.projet}}
         </md-button>
       </div>
@@ -31,14 +31,22 @@
           </md-button>
         </div>
       </div>
-      <div flex="33" layout="column" layout-align="center center">
-        <md-button class="md-default" ng-click="$parent.showArticles = true" ng-if="!showArticles">
+      <div flex="33" layout="row" layout-align="center center">
+        <md-button class="md-default" ng-click="$parent.showArticles = true" ng-if="!showArticles && articleFocus==''">
           <md-icon style="color: #FFF">filter_list</md-icon>
           Choisir un article
         </md-button>
-        <md-button class="md-raised md-accent" ng-click="$parent.showArticles = false" ng-if="showArticles">
-          <md-icon>close</md-icon>
+        <md-button class="md-raised md-accent" ng-click="$parent.showArticles = true" ng-if="!showArticles && articleFocus!=''">
+          <md-icon>check_circle</md-icon>
+          {{articleFocus}}
+        </md-button>
+        <md-button class="md-raised md-default" ng-click="$parent.showArticles = false" ng-if="showArticles">
+          <md-icon>arrow_back</md-icon>
           Revenir au réseau
+        </md-button>
+        <md-button class="md-raised md-accent" ng-click="$parent.articleFocus = ''; $parent.showArticles = false" ng-if="showArticles && articleFocus != ''">
+          <md-icon>close</md-icon>
+          Ne pas filtrer par article
         </md-button>
       </div>
     </div>
@@ -61,7 +69,7 @@
             <md-list-item
               md-virtual-repeat="item in articles"
               md-item-size="100"
-              ng-click=""
+              ng-click="$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
               flex
             >
               <div style="height: 100px; line-height: initial;" flex>

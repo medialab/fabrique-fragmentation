@@ -14,7 +14,8 @@ angular.module('fabfrag.network', ['ngRoute'])
   	$scope.selectedView = 'hemicycle'
     $scope.showArticles = false
     $scope.showDetails = false
-    $scope.lectureFocus = 'none'
+    $scope.lectureFocus = ''
+    $scope.articleFocus = ''
 
     dataStore.getCosignData().then(function(data){
       $timeout(function(){
