@@ -9,14 +9,20 @@ angular.module('fabfrag.network', ['ngRoute'])
   });
 }])
 
-.controller('NetworkCtrl', function($scope, $timeout, $location) {
+.controller('NetworkCtrl', function($scope, $timeout, $location, dataStore) {
   	$scope.loading = true
   	$scope.selectedView = 'hemicycle'
     $scope.showArticles = false
     $scope.showDetails = false
     $scope.lectureFocus = 'none'
 
-    $timeout(function(){
+    dataStore.getCosignData().then(function(res){
+      $timeout(function(){
+        $scope.loading = false
+      })
+    })
+
+    /*$timeout(function(){
       $scope.loading = false
 
       // Dummy data
@@ -66,7 +72,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           }
         }
       ]
-    }, 500)
+    }, 500)*/
 
 
 });

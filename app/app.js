@@ -57,6 +57,28 @@ config(function($routeProvider, $mdThemingProvider) {
 })
 
 // Services
+.factory('dataStore', function($http, $timeout){
+  var ns = {}     // namespace
+
+  ns.cosignData = undefined
+
+  ns.getCosignData = function(){
+  	return new Promise(function(resolve, reject) {
+	  	if (ns.cosignData) {
+	  		resolve(ns.cosignData)
+	  	} else {
+	  		$http.get('data/cosign.json').then(function(r){
+	  			ns.cosignData = r
+	  			resolve(r)
+	  		}, function(r){
+	  			reject(r)
+	  		})
+	  	}
+	  })
+  }
+
+  return ns
+})
 
 // Directives
 .directive('alignFragListItem', function(){
