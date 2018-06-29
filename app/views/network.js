@@ -80,11 +80,11 @@ angular.module('fabfrag.network', ['ngRoute'])
           // Update network
           if ($scope.selectedView == 'hemicycle') {
             g.edges().forEach(function(eid){
-              g.updateEdgeAttribute(eid, 'hidden', () => true )
+              g.setEdgeAttribute(eid, 'hidden', true )
             })
           } else {
             g.edges().forEach(function(eid){
-              g.updateEdgeAttribute(eid, 'hidden', () => false )
+              g.setEdgeAttribute(eid, 'hidden', false )
             })
           }
           window.g = g

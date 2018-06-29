@@ -39,7 +39,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
 
         $scope.$watch('network', function(){
           if ($scope.network) {
-            $scope.g = $scope.network.copy()
+            $scope.g = $scope.network
             $scope.loaded = true
             $scope.nodesCount = $scope.g.order
             $scope.edgesCount = $scope.g.size
@@ -54,7 +54,6 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             duration: 500,
             easing: 'cubicOut'
           }
-          console.log('hidden', $scope.g.getEdgeAttribute($scope.g.edges()[0], 'hidden'))
           var cancelAnimate = Sigma.animate.animateNodes($scope.g, $scope.layoutTarget, settings, function(err){})
         })
 
