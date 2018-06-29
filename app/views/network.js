@@ -81,6 +81,10 @@ angular.module('fabfrag.network', ['ngRoute'])
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', true )
             })
+          } else if ($scope.selectedView == 'fragmentation') {
+            g.edges().forEach(function(eid){
+              g.setEdgeAttribute(eid, 'hidden', g.getNodeAttribute(g.source(eid), 'groupe') != g.getNodeAttribute(g.target(eid), 'groupe') )
+            })
           } else {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', false )
@@ -204,7 +208,7 @@ angular.module('fabfrag.network', ['ngRoute'])
       // Compute coordinates: RESEAU
       if (g.order > 1 || g.size > 0) {
         FA2.assign(g, {
-          iterations: 5/*30*/,
+          iterations: 30,
           settings: {
             barnesHutOptimize: false,
             strongGravityMode: true,
@@ -219,11 +223,125 @@ angular.module('fabfrag.network', ['ngRoute'])
       })
 
       // Compute coordinates: FRAGMENTATION
-      // TODO
+      groupes.forEach(function(groupe){
+        var sample = g.nodes().map(function(nid){
+          var n = g.getNodeAttributes(nid)
+          n.id = nid
+          return n
+        }).filter(function(n){
+          return n.groupe == groupe.acronyme
+        })
+        var rl = calcLinear(sample, 'x', 'y', d3.min(sample, function(n){return n.x}), d3.min(sample, function(n){return n.y}))
+        var angle = Math.atan2(rl.ptB.y - rl.ptA.y, rl.ptB.x - rl.ptA.x)
+        sample.forEach(function(n){
+          var a = Math.atan2(n.y, n.x)
+          var r = Math.sqrt(Math.pow(n.x, 2) + Math.pow(n.y, 2))
+          var a2 = a - angle + Math.PI / 2
+          n.x = r * Math.cos(a2)
+          n.y = r * Math.sin(a2)
+        })
+        var meanX = d3.mean(sample, function(n){ return n.x })
+        var meanY = d3.mean(sample, function(n){ return n.y })
+        sample.forEach(function(n){
+          n.x = n.x - meanX + 50000 * groupes_index[n.groupe].percent
+          n.y = (n.y - meanY) * 3
+          $scope.coordinates.fragmentation[n.id] = {x:n.x, y:n.y}
+        })
+      })
+
+      // Default: hemicycle
+      g.nodes().forEach(function(nid){
+        var coord = $scope.coordinates.hemicycle[nid]
+        g.setNodeAttribute(nid, 'x', coord.x)
+        g.setNodeAttribute(nid, 'y', coord.y)
+      })
 
       $scope.network = g
 
       updateNetwork()
+
+      /// Computing functions
+
+      // From https://bl.ocks.org/HarryStevens/be559bed98d662f69e68fc8a7e0ad097
+      // Calculate a linear regression from the data
+
+      // Takes 5 parameters:
+      // (1) Your data
+      // (2) The column of data plotted on your x-axis
+      // (3) The column of data plotted on your y-axis
+      // (4) The minimum value of your x-axis
+      // (5) The minimum value of your y-axis
+
+      // Returns an object with two points, where each point is an object with an x and y coordinate
+
+      function calcLinear(data, x, y, minX, minY){
+        /////////
+        //SLOPE//
+        /////////
+
+        // Let n = the number of data points
+        var n = data.length;
+
+        // Get just the points
+        var pts = [];
+        data.forEach(function(d,i){
+          var obj = {};
+          obj.x = d[x];
+          obj.y = d[y];
+          obj.mult = obj.x*obj.y;
+          pts.push(obj);
+        });
+
+        // Let a equal n times the summation of all x-values multiplied by their corresponding y-values
+        // Let b equal the sum of all x-values times the sum of all y-values
+        // Let c equal n times the sum of all squared x-values
+        // Let d equal the squared sum of all x-values
+        var sum = 0;
+        var xSum = 0;
+        var ySum = 0;
+        var sumSq = 0;
+        pts.forEach(function(pt){
+          sum = sum + pt.mult;
+          xSum = xSum + pt.x;
+          ySum = ySum + pt.y;
+          sumSq = sumSq + (pt.x * pt.x);
+        });
+        var a = sum * n;
+        var b = xSum * ySum;
+        var c = sumSq * n;
+        var d = xSum * xSum;
+
+        // Plug the values that you calculated for a, b, c, and d into the following equation to calculate the slope
+        // slope = m = (a - b) / (c - d)
+        var m = (a - b) / (c - d);
+
+        /////////////
+        //INTERCEPT//
+        /////////////
+
+        // Let e equal the sum of all y-values
+        var e = ySum;
+
+        // Let f equal the slope times the sum of all x-values
+        var f = m * xSum;
+
+        // Plug the values you have calculated for e and f into the following equation for the y-intercept
+        // y-intercept = b = (e - f) / n
+        var b = (e - f) / n;
+
+        // return an object of two points
+        // each point is an object with an x and y coordinate
+        return {
+          ptA : {
+            x: minX,
+            y: m * minX + b
+          },
+          ptB : {
+            y: minY,
+            x: (minY - b) / m
+          }
+        }
+      }
     }
 
 });
