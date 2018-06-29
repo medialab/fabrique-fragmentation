@@ -71,7 +71,6 @@ config(function($routeProvider, $mdThemingProvider) {
 	  		$http.get('data/cosign.json').then(function(r){
 	  			ns.cosignData = r.data
 	  			ns.indexes = dataCruncher.consolidateSourceData(r.data)
-	  			console.log('Indexes:', ns.indexes)
 	  			resolve(r.data)
 	  		}, function(r){
 	  			reject(r)
@@ -92,7 +91,6 @@ config(function($routeProvider, $mdThemingProvider) {
 
   ns.consolidateSourceData = function(data){
   	var indexes = {projets:{}}
-  	console.log('CONSOLIDATE:', data)
 
   	// Iterate over:
   	// Projet de loi
