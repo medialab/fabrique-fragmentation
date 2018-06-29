@@ -21,6 +21,7 @@ angular.module('fabfrag.network', ['ngRoute'])
         $scope.loading = false
 
         $scope.projetData = data[$routeParams.projet_id]
+        $scope.projetIndex = dataStore.getIndexes().projets[$routeParams.projet_id]
         
         if ($scope.projetData) {
           $scope.structure = {
@@ -31,13 +32,26 @@ angular.module('fabfrag.network', ['ngRoute'])
           alert(':-(\nOups, le projet' + $routeParams.projet_id + ' ne se trouve pas dans les données...')
         }
 
+        $scope.articles = d3.keys($scope.projetIndex.articles).map(function(article_id){
+          var article = $scope.projetIndex.articles[article_id]
+          return {
+            id: article_id,
+            shortName: article_id,
+            alignement: article.alignement,
+            amendements: article.amendements,
+            fragmentation: article.fragmentation
+          }
+        })
+
+
         // Crunch the data
         console.log('projet data', $scope.projetData)
 
       })
     })
 
-    $scope.$watch('lectureFocus', updateNetwork)
+    $scope.$watch('lectureFocus', function(){
+    })
 
     function updateNetwork() {
       $timeout(function(){
