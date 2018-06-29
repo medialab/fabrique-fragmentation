@@ -14,6 +14,9 @@ require('angular-route');
 // Making some modules global for the custom scripts to consume
 var d3 = require('d3');
 window.d3 = d3;
+window.Sigma = require('sigma/endpoint');
+window.Graph = require('graphology');
+window.Graph.library = require('graphology-library/browser');
 
 // Requiring own modules
 require('./views/home.js');

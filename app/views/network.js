@@ -74,21 +74,30 @@ angular.module('fabfrag.network', ['ngRoute'])
                 })
 
                 // Register links
-                cosignataires.forEach(function(p1, i1){
-                  cosignataires.some(function(p2, i2){
-                    if (i1 > i2) {
+                cosignataires.forEach(function(p1){
+                  cosignataires.forEach(function(p2){
+                    if (p1.id > p2.id) {
                       var linkid = p1.id + '-' + p2.id
                       cosignatures[linkid] = cosignatures[linkid] || {source: p1.id, target: p2.id, count:0}
                       cosignatures[linkid].count++
-                      return false
-                    } else return true
+                    }
                   })
                 })
               })
             }
           })
         })
-        console.log(parlementaires, cosignatures)
+
+        var graph = new Graph({type: 'undirected'})
+        graph.addNodesFrom(parlementaires)
+
+        d3.keys(cosignatures).forEach(function(linkid){
+          var c = cosignatures[linkid]
+          graph.addEdge(c.source, c.target, {count:c.count})
+        })
+
+        console.log(graph, graph.order, graph.size)
+
       })
     }
 
