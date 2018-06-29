@@ -77,9 +77,10 @@ config(function($routeProvider, $mdThemingProvider) {
 	  			$http.get('https://www.nosdeputes.fr/organismes/groupe/json'),
 	  			$http.get('https://2012-2017.nosdeputes.fr/organismes/groupe/json'),
 	  			$http.get('https://www.nosdeputes.fr/deputes/json'),
-	  			$http.get('https://2012-2017.nosdeputes.fr/deputes/json')
+	  			$http.get('https://2012-2017.nosdeputes.fr/deputes/json'),
+	  			$http.get('data/places.json')
 	  		]).then(function(r){
-	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}}
+	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}, places:r[4].data}
 	  			dataCruncher.consolidateNosDeputesData(ns.nosdeputesData)
 	  			resolve(ns.nosdeputesData)
 	  		}, function(r){

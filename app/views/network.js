@@ -84,6 +84,7 @@ angular.module('fabfrag.network', ['ngRoute'])
                     id: p.id,
                     label: $scope.nosDeputesData.deputes[p.id].nom,
                     groupe: p.groupe,
+                    place: $scope.nosDeputesData.deputes[p.id].place_en_hemicycle,
                     color:'rgb(' + $scope.nosDeputesData.groupes_byAcro[p.groupe].couleur + ')',
                     count: 0
                   }
@@ -111,18 +112,18 @@ angular.module('fabfrag.network', ['ngRoute'])
         d3.keys(cosignatures).forEach(function(linkid){
           var c = cosignatures[linkid]
           var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
-          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#CCC', size: size})
+          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#E6E6E6', size: size})
         })
 
-        // Add random colors and positions
+        // Set positions
         g.nodes().forEach(function(nid){
-          g.setNodeAttribute(nid, 'x', 100*Math.random())
-          g.setNodeAttribute(nid, 'y', 100*Math.random())
+          var place = $scope.nosDeputesData.places[g.getNodeAttribute(nid, 'place')]
+          g.setNodeAttribute(nid, 'x', place.x)
+          g.setNodeAttribute(nid, 'y', -place.y)
           g.setNodeAttribute(nid, 'size', 6)
         })
 
-        // FA2(g, {iterations: 100})
-        FA2.assign(g, {
+        /*FA2.assign(g, {
           iterations: 30,
           settings: {
             barnesHutOptimize: false,
@@ -131,7 +132,7 @@ angular.module('fabfrag.network', ['ngRoute'])
             scalingRatio: 100,
             slowDown: 1
           }
-        })
+        })*/
 
 
 
