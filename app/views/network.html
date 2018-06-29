@@ -109,10 +109,8 @@
 
     <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF; z-index: 5">
       <sigma-network
-        ng-if="networkData.loaded"
+        network="network"
         start-layout-on-load="false"
-        get-camera-state="$parent.getCameraState"
-        editable-attributes="true"
         layout-fill
       ></sigma-network>
     </div>

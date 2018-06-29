@@ -88,15 +88,30 @@ angular.module('fabfrag.network', ['ngRoute'])
           })
         })
 
-        var graph = new Graph({type: 'undirected'})
-        graph.addNodesFrom(parlementaires)
+        var g = new Graph({type: 'undirected'})
+        g.addNodesFrom(parlementaires)
 
         d3.keys(cosignatures).forEach(function(linkid){
           var c = cosignatures[linkid]
-          graph.addEdge(c.source, c.target, {count:c.count})
+          g.addEdge(c.source, c.target, {count:c.count})
         })
 
-        console.log(graph, graph.order, graph.size)
+        // Add random colors and positions
+        g.nodes().forEach(function(nid){
+          g.setNodeAttribute(nid, 'x', Math.random())
+          g.setNodeAttribute(nid, 'y', Math.random())
+          g.setNodeAttribute(nid, 'label', nid)
+          g.setNodeAttribute(nid, 'size', 10)
+          g.setNodeAttribute(nid, 'color', '#666666')
+        })
+
+        g.edges().forEach(function(eid){
+          g.setEdgeAttribute(eid, 'color', '#AAA')
+        })
+
+        console.log(g, g.order, g.size)
+
+        $scope.network = g
 
       })
     }
