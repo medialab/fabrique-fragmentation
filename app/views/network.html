@@ -44,7 +44,7 @@
           <md-icon>arrow_back</md-icon>
           Revenir au réseau
         </md-button>
-        <md-button class="md-raised md-accent" ng-click="$parent.articleFocus = ''; $parent.showArticles = false" ng-if="showArticles && articleFocus != ''">
+        <md-button class="md-raised md-accent" ng-click="$parent.$parent.articleFocus = ''; $parent.showArticles = false" ng-if="showArticles && articleFocus != ''">
           <md-icon>close</md-icon>
           Ne pas filtrer par article
         </md-button>
@@ -69,11 +69,16 @@
             <md-list-item
               md-virtual-repeat="item in articles"
               md-item-size="100"
-              ng-click="$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
+              ng-click="$parent.$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
               flex
             >
               <div style="height: 100px; line-height: initial;" flex>
-                <align-frag-list-item item="item" layout-fill></align-frag-list-item>
+                <align-frag-list-item
+                  item="item"
+                  groups="nosDeputesData.groupes_byAcro"
+                  ng-if="item.amendements > 0"
+                  layout-fill
+                ></align-frag-list-item>
               </div>
             </md-list-item>
           </md-list>

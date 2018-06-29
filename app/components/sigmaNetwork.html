@@ -1,3 +1,38 @@
+<!-- Message if too small -->
+<div layout-fill layout="column" layout-align="center center" ng-if="tooSmall">
+  
+  <!-- Round -->
+  <div
+    md-colors="{'background': 'default-primary'}"
+    style="width:200px;height:200px;border-radius:50%;"
+    layout="column"
+    layout-align="center center"
+  >
+    <div style="height: 24px"><!-- For visual balance --></div>
+    <div><strong>{{nodesCount|number}} NODES</strong></div>
+    <div><strong>{{edgesCount|number}} EDGES</strong></div>
+    <div>
+      <md-button
+        aria-label="Download GEXF file"
+        ng-click="downloadNetwork()"
+      >
+        <md-tooltip md-direction="right">Download GEXF file</md-tooltip>
+        <md-icon style="color: #FFF">file_download</md-icon>
+        Download
+      </md-button>
+    </div>
+  </div>
+  
+  <!-- Message -->
+  <div style="margin-top: 16px">
+    THIS NETWORK IS TOO SMALL
+  </div>
+  <div>
+    It makes no sense to show it
+  </div>
+
+</div>
+
 <!-- Message if too big -->
 <div layout-fill layout="column" layout-align="center center" ng-if="tooBig">
   
@@ -46,7 +81,7 @@
   layout-fill
   layout="column"
   layout-align="center center"
-  ng-if="loaded && !tooBig"
+  ng-if="loaded && !tooBig && !tooSmall"
   style="position: relative"
 >
   <!-- Sigma container -->

@@ -72,7 +72,6 @@ angular.module('fabfrag.network', ['ngRoute'])
     function updateNetwork() {
       if ($scope.network) {
         $timeout(function(){
-          console.log('VIEW', $scope.selectedView)
 
           var g = $scope.network
           var coordinates = $scope.coordinates[$scope.selectedView]
@@ -203,16 +202,18 @@ angular.module('fabfrag.network', ['ngRoute'])
 
 
       // Compute coordinates: RESEAU
-      FA2.assign(g, {
-        iterations: 5/*30*/,
-        settings: {
-          barnesHutOptimize: false,
-          strongGravityMode: true,
-          gravity: 0.1,
-          scalingRatio: 100,
-          slowDown: 1
-        }
-      })
+      if (g.order > 1 || g.size > 0) {
+        FA2.assign(g, {
+          iterations: 5/*30*/,
+          settings: {
+            barnesHutOptimize: false,
+            strongGravityMode: true,
+            gravity: 0.1,
+            scalingRatio: 100,
+            slowDown: 1
+          }
+        })
+      }
       g.nodes().forEach(function(nid){
         $scope.coordinates.reseau[nid] = { x:g.getNodeAttribute(nid, 'x'), y:g.getNodeAttribute(nid, 'y') }
       })

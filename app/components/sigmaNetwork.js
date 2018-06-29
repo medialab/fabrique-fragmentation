@@ -30,6 +30,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
         $scope.nodesCount
         $scope.edgesCount
         $scope.tooBig = false
+        $scope.tooSmall = false
         $scope.loaded = false
         $scope.layout
         $scope.colorAtt
@@ -44,6 +45,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             $scope.nodesCount = $scope.g.order
             $scope.edgesCount = $scope.g.size
             $scope.tooBig = $scope.nodesCount > networkDisplayThreshold
+            $scope.tooSmall = $scope.nodesCount < 3 || $scope.edgesCount == 0
             refreshSigma()
           }
         })
