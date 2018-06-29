@@ -77,17 +77,37 @@ angular.module('fabfrag.network', ['ngRoute'])
           var coordinates = $scope.coordinates[$scope.selectedView]
 
           // Update network
-          if ($scope.selectedView == 'hemicycle') {
+          if ($scope.selectedView == 'alignement') {
+            g.edges().forEach(function(eid){
+              g.setEdgeAttribute(eid, 'hidden', false )
+              g.setEdgeAttribute(eid, 'color', '#AAA')
+            })
+            g.nodes().forEach(function(nid){
+              g.setNodeAttribute(nid, 'size', 5)
+            })
+          } else if ($scope.selectedView == 'hemicycle') {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', true )
+              g.setEdgeAttribute(eid, 'color', '#E6E6E6')
+            })
+            g.nodes().forEach(function(nid){
+              g.setNodeAttribute(nid, 'size', 5)
+            })
+          } else if ($scope.selectedView == 'reseau') {
+            g.edges().forEach(function(eid){
+              g.setEdgeAttribute(eid, 'hidden', false )
+              g.setEdgeAttribute(eid, 'color', '#E6E6E6' )
+            })
+            g.nodes().forEach(function(nid){
+              g.setNodeAttribute(nid, 'size', 5)
             })
           } else if ($scope.selectedView == 'fragmentation') {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', g.getNodeAttribute(g.source(eid), 'groupe') != g.getNodeAttribute(g.target(eid), 'groupe') )
+              g.setEdgeAttribute(eid, 'color', '#E6E6E6' )
             })
-          } else {
-            g.edges().forEach(function(eid){
-              g.setEdgeAttribute(eid, 'hidden', false )
+            g.nodes().forEach(function(nid){
+              g.setNodeAttribute(nid, 'size', 4)
             })
           }
           window.g = g
@@ -150,12 +170,7 @@ angular.module('fabfrag.network', ['ngRoute'])
       d3.keys(cosignatures).forEach(function(linkid){
         var c = cosignatures[linkid]
         var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
-        g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#E6E6E6', size: size})
-      })
-
-      // Set node sizes
-      g.nodes().forEach(function(nid){
-        g.setNodeAttribute(nid, 'size', 6)
+        g.addEdge(c.source, c.target, {count:c.count, weight:c.count, size: size})
       })
 
       // Compute coordinates: ALIGNEMENT
@@ -231,8 +246,14 @@ angular.module('fabfrag.network', ['ngRoute'])
         }).filter(function(n){
           return n.groupe == groupe.acronyme
         })
-        var rl = calcLinear(sample, 'x', 'y', d3.min(sample, function(n){return n.x}), d3.min(sample, function(n){return n.y}))
-        var angle = Math.atan2(rl.ptB.y - rl.ptA.y, rl.ptB.x - rl.ptA.x)
+        var rl
+        var angle
+        if (sample.length > 1) {
+          rl = calcLinear(sample, 'x', 'y', d3.min(sample, function(n){return n.x}), d3.min(sample, function(n){return n.y}))
+          angle = Math.atan2(rl.ptB.y - rl.ptA.y, rl.ptB.x - rl.ptA.x)
+        } else {
+          angle = 0
+        }
         sample.forEach(function(n){
           var a = Math.atan2(n.y, n.x)
           var r = Math.sqrt(Math.pow(n.x, 2) + Math.pow(n.y, 2))
