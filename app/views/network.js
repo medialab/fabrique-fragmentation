@@ -16,6 +16,9 @@ angular.module('fabfrag.network', ['ngRoute'])
     $scope.showDetails = false
     $scope.lectureFocus = ''
     $scope.articleFocus = ''
+    $scope.coordinates = {alignement:{}, hemicycle:{}, reseau:{}, fragmentation:{}}
+    $scope.layoutVersion = 0
+    $scope.layoutTarget
 
     Promise.all([
       dataStore.getNosDeputesData(),
@@ -54,6 +57,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           }
         })
 
+        computeNetwork()
         updateNetwork()
 
       })
@@ -62,138 +66,119 @@ angular.module('fabfrag.network', ['ngRoute'])
       
     })
 
+    $scope.$watch('selectedView', updateNetwork)
     $scope.$watch('lectureFocus', updateNetwork)
     $scope.$watch('articleFocus', updateNetwork)
 
     function updateNetwork() {
-      $timeout(function(){
-        if ($scope.projetData == undefined || $scope.projetIndex == undefined) return
+      if ($scope.network) {
+        $timeout(function(){
+          console.log('VIEW', $scope.selectedView)
 
-        var parlementaires = {}
-        var cosignatures = {}
-        var lectures = $scope.lectureFocus == '' ? d3.keys($scope.projetData) : [$scope.lectureFocus]
-        var articles = $scope.articleFocus == '' ? d3.keys($scope.projetIndex.articles) : [$scope.articleFocus]
-        lectures.forEach(function(lecture_id){
-          articles.forEach(function(article_id){
-            var articleData = $scope.projetData[lecture_id][article_id]
-            if (articleData) {
-              articleData.sign_amend.forEach(function(cosignataires){
-                // Register parlementaires
-                cosignataires.forEach(function(p){
-                  parlementaires[p.id] = parlementaires[p.id] || {
-                    id: p.id,
-                    label: $scope.nosDeputesData.deputes[p.id].nom,
-                    groupe: p.groupe,
-                    place: $scope.nosDeputesData.deputes[p.id].place_en_hemicycle,
-                    color:'rgb(' + $scope.nosDeputesData.groupes_byAcro[p.groupe].couleur + ')',
-                    count: 0
-                  }
-                  parlementaires[p.id].count++
-                })
+          var g = $scope.network
+          var coordinates = $scope.coordinates[$scope.selectedView]
 
-                // Register links
-                cosignataires.forEach(function(p1){
-                  cosignataires.forEach(function(p2){
-                    if (p1.id > p2.id) {
-                      var linkid = p1.id + '-' + p2.id
-                      cosignatures[linkid] = cosignatures[linkid] || {source: p1.id, target: p2.id, count:0}
-                      cosignatures[linkid].count++
-                    }
-                  })
-                })
-              })
-            }
+          $scope.layoutTarget = {}
+          g.nodes().forEach(function(nid){
+            var c = coordinates[nid]
+            $scope.layoutTarget[nid] = c
           })
+
+          $scope.layoutVersion++
         })
-
-        var g = new Graph({type: 'undirected'})
-        g.addNodesFrom(parlementaires)
-
-        d3.keys(cosignatures).forEach(function(linkid){
-          var c = cosignatures[linkid]
-          var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
-          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#E6E6E6', size: size})
-        })
-
-        // Set positions
-        g.nodes().forEach(function(nid){
-          var place = $scope.nosDeputesData.places[g.getNodeAttribute(nid, 'place')]
-          g.setNodeAttribute(nid, 'x', place.x)
-          g.setNodeAttribute(nid, 'y', -place.y)
-          g.setNodeAttribute(nid, 'size', 6)
-        })
-
-        /*FA2.assign(g, {
-          iterations: 30,
-          settings: {
-            barnesHutOptimize: false,
-            strongGravityMode: true,
-            gravity: 0.1,
-            scalingRatio: 100,
-            slowDown: 1
-          }
-        })*/
-
-
-
-        console.log(g, g.order, g.size)
-
-        $scope.network = g
-
-      })
+      }
     }
 
-    /*$timeout(function(){
-      $scope.loading = false
+    function computeNetwork() {
+      if ($scope.projetData == undefined || $scope.projetIndex == undefined) return
 
-      // Dummy data
-      $scope.data = {
-        projet: 'PROJET DE LOI',
-        lectures: [
-          'LECTURE 1',
-          'LECTURE 2',
-          'LECTURE 3'
-        ]
-      }
+      var parlementaires = {}
+      var cosignatures = {}
+      var lectures = $scope.lectureFocus == '' ? d3.keys($scope.projetData) : [$scope.lectureFocus]
+      var articles = $scope.articleFocus == '' ? d3.keys($scope.projetIndex.articles) : [$scope.articleFocus]
+      lectures.forEach(function(lecture_id){
+        articles.forEach(function(article_id){
+          var articleData = $scope.projetData[lecture_id][article_id]
+          if (articleData) {
+            articleData.sign_amend.forEach(function(cosignataires){
+              // Register parlementaires
+              cosignataires.forEach(function(p){
+                parlementaires[p.id] = parlementaires[p.id] || {
+                  id: p.id,
+                  label: $scope.nosDeputesData.deputes[p.id].nom,
+                  groupe: p.groupe,
+                  place: $scope.nosDeputesData.deputes[p.id].place_en_hemicycle,
+                  color:'rgb(' + $scope.nosDeputesData.groupes_byAcro[p.groupe].couleur + ')',
+                  count: 0
+                }
+                parlementaires[p.id].count++
+              })
 
-      // Dummy data
-      $scope.articles = [
-        {
-          alignement: 0.6,
-          fragmentation: {
-            A: 0,
-            B: 0.1,
-            C: 0,
-            D: 0.3
-          },
-          shortName: 'Article X',
-          tags: [
-            'tag 1',
-            'tag 2'
-          ],
-          dates: {
-            depot: '2018-01-28',
-            promulgation: '2018-06-28'
+              // Register links
+              cosignataires.forEach(function(p1){
+                cosignataires.forEach(function(p2){
+                  if (p1.id > p2.id) {
+                    var linkid = p1.id + '-' + p2.id
+                    cosignatures[linkid] = cosignatures[linkid] || {source: p1.id, target: p2.id, count:0}
+                    cosignatures[linkid].count++
+                  }
+                })
+              })
+            })
           }
-        },
-        {
-          alignement: 0.3,
-          fragmentation: {
-            A: 1.0,
-            B: 0.05,
-            C: 0.01,
-            D: 0.02
-          },
-          shortName: 'Article Y',
-          tags: [
-          ],
-          dates: {
-            depot: '2018-01-28',
-            promulgation: '2018-06-28'
-          }
+        })
+      })
+
+      var g = new Graph({type: 'undirected'})
+      g.addNodesFrom(parlementaires)
+
+      d3.keys(cosignatures).forEach(function(linkid){
+        var c = cosignatures[linkid]
+        var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
+        g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#E6E6E6', size: size})
+      })
+
+      // Set node sizes
+      g.nodes().forEach(function(nid){
+        g.setNodeAttribute(nid, 'size', 6)
+      })
+
+      // Compute coordinates: ALIGNEMENT
+      g.nodes().forEach(function(nid){
+        var place = $scope.nosDeputesData.places[g.getNodeAttribute(nid, 'place')]
+        $scope.coordinates.alignement[nid] = {x:place.x, y:-place.y}
+        g.setNodeAttribute(nid, 'x', place.x)
+        g.setNodeAttribute(nid, 'y', -place.y)
+      })
+
+      // Compute coordinates: HEMICYCLE
+      g.nodes().forEach(function(nid){
+        var place = $scope.nosDeputesData.places[g.getNodeAttribute(nid, 'place')]
+        $scope.coordinates.hemicycle[nid] = {x:10*place.x, y:-10*place.y}
+        g.setNodeAttribute(nid, 'x', place.x)
+        g.setNodeAttribute(nid, 'y', -place.y)
+      })
+
+
+      // Compute coordinates: RESEAU
+      FA2.assign(g, {
+        iterations: 30,
+        settings: {
+          barnesHutOptimize: false,
+          strongGravityMode: true,
+          gravity: 0.1,
+          scalingRatio: 100,
+          slowDown: 1
         }
-      ]
-    }, 500)*/
+      })
+      g.nodes().forEach(function(nid){
+        $scope.coordinates.reseau[nid] = { x:g.getNodeAttribute(nid, 'x'), y:g.getNodeAttribute(nid, 'y') }
+      })
 
+      // Compute coordinates: FRAGMENTATION
+      // TODO
+
+      $scope.network = g
+    }
 
 });

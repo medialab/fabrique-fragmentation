@@ -13,7 +13,7 @@
     "d3": "^4.2.2",
     "graphology": "^0.11.3",
     "graphology-library": "0.1.0",
-    "sigma": "2.0.0-alpha10-rc2"
+    "sigma": "2.0.0-alpha13"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",

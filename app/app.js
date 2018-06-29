@@ -15,6 +15,7 @@ require('angular-route');
 var d3 = require('d3');
 window.d3 = d3;
 window.Sigma = require('sigma/endpoint');
+window.Sigma.animate = require('sigma/animate');
 window.Graph = require('graphology');
 window.Graph.library = require('graphology-library/browser');
 window.FA2 = require('graphology-layout-forceatlas2');

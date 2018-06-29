@@ -19,10 +19,11 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
         nodeFilter: '=',                // Optional. Used to display only certain nodes (the others are present but muted)
         hardFilter: '=',                // Optional. When enabled, hidden nodes are completely removed
         hideCommands: '=',
-        enableLayout: '='
+        enableLayout: '=',
+        layoutTarget: '=',
+        layoutVersion: '='
       }
       ,link: function($scope, el, attrs) {
-        var sigma
         var renderer
         var networkDisplayThreshold = 1000
 
@@ -45,6 +46,16 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             $scope.tooBig = $scope.nodesCount > networkDisplayThreshold
             refreshSigma()
           }
+        })
+
+        $scope.$watch('layoutVersion', function(){
+          // Update network
+          
+          var settings = {
+            duration: 500,
+            easing: 'cubicOut'
+          }
+          var cancelAnimate = Sigma.animate.animateNodes($scope.g, $scope.layoutTarget, settings, function(err){})
         })
 
         $scope.$watch('onNodeClick', updateMouseEvents)
@@ -92,7 +103,6 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
           if ($scope.layout) {
             $scope.layout.kill()
           }
-          var sigma = undefined
           var renderer = undefined
 
         })
@@ -108,12 +118,11 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             var container = document.getElementById('sigma-div')
             if (!container) return
             container.innerHTML = ''
-            renderer = new Sigma.WebGLRenderer(container, {
+            renderer = new Sigma.WebGLRenderer($scope.g, container, {
               labelFont: "Quicksand",
               labelWeight: '400',
               labelSize: 16
             })
-            sigma = new Sigma($scope.g, renderer)
 
             $scope.zoomIn = function(){
               var camera = renderer.getCamera()
@@ -163,7 +172,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
         }
 
         function updateMouseEvents() {
-          if (sigma === undefined || renderer === undefined) {
+          if (renderer === undefined) {
             return
           }
 

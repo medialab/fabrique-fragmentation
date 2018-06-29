@@ -86,22 +86,22 @@
   <div layout="row" flex ng-if="!showArticles">
     <div layout="column" layout-align="center" style="width: 140px">
       <network-view-selector
-        selected-view="selectedView"
-        view="'consensus'"
+        selected-view="$parent.$parent.selectedView"
+        view="'alignement'"
       >
       </network-view-selector>
       <network-view-selector
-        selected-view="selectedView"
+        selected-view="$parent.$parent.selectedView"
         view="'hemicycle'"
       >
       </network-view-selector>
       <network-view-selector
-        selected-view="selectedView"
+        selected-view="$parent.$parent.selectedView"
         view="'reseau'"
       >
       </network-view-selector>
       <network-view-selector
-        selected-view="selectedView"
+        selected-view="$parent.$parent.selectedView"
         view="'fragmentation'"
       >
       </network-view-selector>
@@ -111,6 +111,8 @@
       <sigma-network
         network="network"
         start-layout-on-load="false"
+        layout-version="layoutVersion"
+        layout-target="layoutTarget"
         layout-fill
       ></sigma-network>
     </div>
