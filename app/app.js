@@ -66,6 +66,28 @@ config(function($routeProvider, $mdThemingProvider) {
 
   ns.cosignData = undefined
   ns.indexes = undefined
+  ns.nosdeputesData = undefined
+
+  ns.getNosDeputesData = function(){
+  	return new Promise(function(resolve, reject) {
+	  	if (ns.nosdeputesData) {
+	  		resolve(ns.nosdeputesData)
+	  	} else {
+	  		Promise.all([
+	  			$http.get('https://www.nosdeputes.fr/organismes/groupe/json'),
+	  			$http.get('https://2012-2017.nosdeputes.fr/organismes/groupe/json'),
+	  			$http.get('https://www.nosdeputes.fr/deputes/json'),
+	  			$http.get('https://2012-2017.nosdeputes.fr/deputes/json')
+	  		]).then(function(r){
+	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}}
+	  			dataCruncher.consolidateNosDeputesData(ns.nosdeputesData)
+	  			resolve(ns.nosdeputesData)
+	  		}, function(r){
+	  			reject(r)
+	  		})
+	  	}
+	  })
+  }
 
   ns.getCosignData = function(){
   	return new Promise(function(resolve, reject) {
@@ -93,7 +115,25 @@ config(function($routeProvider, $mdThemingProvider) {
 .factory('dataCruncher', function(){
   var ns = {}     // namespace
 
-  ns.consolidateSourceData = function(data){
+  ns.consolidateNosDeputesData = function(data) {
+  	data.deputes = {}
+  	d3.keys(data.deputesData).forEach(function(legislature){
+  		data.deputesData[legislature].deputes.forEach(function(depute){
+  			data.deputes[depute.depute.id] = depute.depute
+  		})
+  	})
+
+  	data.groupes = {}
+  	data.groupes_byAcro = {}
+  	d3.keys(data.groupesData).forEach(function(legislature){
+  		data.groupesData[legislature].organismes.forEach(function(org){
+  			data.groupes[org.organisme.id] = org.organisme
+  			data.groupes_byAcro[org.organisme.acronyme] = org.organisme
+  		})
+  	})
+  }
+
+  ns.consolidateSourceData = function(data) {
   	var indexes = {projets:{}}
 
   	// Iterate over:

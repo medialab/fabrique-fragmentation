@@ -17,11 +17,19 @@ angular.module('fabfrag.network', ['ngRoute'])
     $scope.lectureFocus = ''
     $scope.articleFocus = ''
 
-    dataStore.getCosignData().then(function(data){
+    Promise.all([
+      dataStore.getNosDeputesData(),
+      dataStore.getCosignData()
+    ]).then(function(r){
       $timeout(function(){
         $scope.loading = false
 
-        $scope.projetData = data[$routeParams.projet_id]
+        // Data from Nos Députés
+        $scope.nosDeputesData = r[0]
+        console.log('Nos Deputes Data', r[0])
+
+        // Data about cosignatures
+        $scope.projetData = r[1][$routeParams.projet_id]
         $scope.projetIndex = dataStore.getIndexes().projets[$routeParams.projet_id]
         console.log('DATA', $scope.projetData)
         console.log('INDEX', $scope.projetIndex)
@@ -49,6 +57,9 @@ angular.module('fabfrag.network', ['ngRoute'])
         updateNetwork()
 
       })
+    })
+    dataStore.getCosignData().then(function(data){
+      
     })
 
     $scope.$watch('lectureFocus', updateNetwork)
