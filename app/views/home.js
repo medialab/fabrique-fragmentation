@@ -12,15 +12,15 @@ angular.module('fabfrag.home', ['ngRoute'])
 .controller('HomeCtrl', function($scope, $timeout, $location, dataStore) {
   	$scope.loading = true
 
-    dataStore.getCosignData().then(function(res){
+    dataStore.getCosignData().then(function(data){
       $timeout(function(){
-        console.log(res)
+        console.log(data)
 
         // Parse
         $scope.items = []
         var projet_id
-        for (projet_id in res.data) {
-          var projet = res.data[projet_id]
+        for (projet_id in data) {
+          var projet = data[projet_id]
 
           var projet_alignement_sum = 0
           var projet_fragmentation_sum = {}

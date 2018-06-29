@@ -9,16 +9,28 @@ angular.module('fabfrag.network', ['ngRoute'])
   });
 }])
 
-.controller('NetworkCtrl', function($scope, $timeout, $location, dataStore) {
+.controller('NetworkCtrl', function($scope, $timeout, $location, $routeParams, dataStore) {
   	$scope.loading = true
   	$scope.selectedView = 'hemicycle'
     $scope.showArticles = false
     $scope.showDetails = false
     $scope.lectureFocus = 'none'
 
-    dataStore.getCosignData().then(function(res){
+    dataStore.getCosignData().then(function(data){
       $timeout(function(){
         $scope.loading = false
+        console.log(data)
+
+        $scope.projetData = data[$routeParams.projet_id]
+        
+        if ($scope.projetData) {
+          $scope.structure = {
+            projet: $routeParams.projet_id,
+            lectures: d3.keys($scope.projetData).map(function(d){ return 'Lecture '+d })
+          }
+        } else {
+          alert(':-(\nOups, le projet' + $routeParams.projet_id + ' ne se trouve pas dans les données...')
+        }
       })
     })
 

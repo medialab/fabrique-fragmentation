@@ -68,8 +68,8 @@ config(function($routeProvider, $mdThemingProvider) {
 	  		resolve(ns.cosignData)
 	  	} else {
 	  		$http.get('data/cosign.json').then(function(r){
-	  			ns.cosignData = r
-	  			resolve(r)
+	  			ns.cosignData = r.data
+	  			resolve(r.data)
 	  		}, function(r){
 	  			reject(r)
 	  		})
