@@ -12,13 +12,21 @@ angular.module('fabfrag.home', ['ngRoute'])
 .controller('HomeCtrl', function($scope, $timeout, $location, dataStore) {
 	$scope.loading = true
 
-  dataStore.getCosignData().then(function(data){
+  Promise.all([
+    dataStore.getNosDeputesData(),
+    dataStore.getCosignData()
+  ]).then(function(r){
     $timeout(function(){
       $scope.indexes = dataStore.getIndexes()
 
+      // Data from Nos Députés
+      $scope.nosDeputesData = r[0]
+      console.log('Nos Deputes Data', r[0])
+
+      // Data about cosignatures
       $scope.items = []
       var projet_id
-      for (projet_id in data) {
+      for (projet_id in r[1]) {
         var projet_index = $scope.indexes.projets[projet_id]
         $scope.items.push({
           id: projet_id,
