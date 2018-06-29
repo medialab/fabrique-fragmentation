@@ -40,7 +40,7 @@ angular.module('fabfrag.network', ['ngRoute'])
         if ($scope.projetData) {
           $scope.structure = {
             projet: $routeParams.projet_id,
-            lectures: d3.keys($scope.projetData).map(function(d){ return 'Lecture '+d })
+            lectures: d3.keys($scope.projetData)
           }
         } else {
           alert(':-(\nOups, le projet' + $routeParams.projet_id + ' ne se trouve pas dans les données...')
