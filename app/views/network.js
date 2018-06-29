@@ -93,21 +93,31 @@ angular.module('fabfrag.network', ['ngRoute'])
 
         d3.keys(cosignatures).forEach(function(linkid){
           var c = cosignatures[linkid]
-          g.addEdge(c.source, c.target, {count:c.count})
+          g.addEdge(c.source, c.target, {count:c.count, weight:c.count, color: '#AAA'})
         })
 
         // Add random colors and positions
         g.nodes().forEach(function(nid){
-          g.setNodeAttribute(nid, 'x', Math.random())
-          g.setNodeAttribute(nid, 'y', Math.random())
+          g.setNodeAttribute(nid, 'x', 100*Math.random())
+          g.setNodeAttribute(nid, 'y', 100*Math.random())
           g.setNodeAttribute(nid, 'label', nid)
-          g.setNodeAttribute(nid, 'size', 10)
+          g.setNodeAttribute(nid, 'size', 6)
           g.setNodeAttribute(nid, 'color', '#666666')
         })
 
-        g.edges().forEach(function(eid){
-          g.setEdgeAttribute(eid, 'color', '#AAA')
+        // FA2(g, {iterations: 100})
+        FA2.assign(g, {
+          iterations: 30,
+          settings: {
+            barnesHutOptimize: false,
+            strongGravityMode: true,
+            gravity: 0.1,
+            scalingRatio: 100,
+            slowDown: 1
+          }
         })
+
+
 
         console.log(g, g.order, g.size)
 
