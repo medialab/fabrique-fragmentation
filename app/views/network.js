@@ -58,7 +58,6 @@ angular.module('fabfrag.network', ['ngRoute'])
         })
 
         computeNetwork()
-        updateNetwork()
 
       })
     })
@@ -66,9 +65,9 @@ angular.module('fabfrag.network', ['ngRoute'])
       
     })
 
+    $scope.$watch('lectureFocus', computeNetwork)
+    $scope.$watch('articleFocus', computeNetwork)
     $scope.$watch('selectedView', updateNetwork)
-    $scope.$watch('lectureFocus', updateNetwork)
-    $scope.$watch('articleFocus', updateNetwork)
 
     function updateNetwork() {
       if ($scope.network) {
@@ -78,6 +77,19 @@ angular.module('fabfrag.network', ['ngRoute'])
           var g = $scope.network
           var coordinates = $scope.coordinates[$scope.selectedView]
 
+          // Update network
+          if ($scope.selectedView == 'hemicycle') {
+            g.edges().forEach(function(eid){
+              g.updateEdgeAttribute(eid, 'hidden', () => true )
+            })
+          } else {
+            g.edges().forEach(function(eid){
+              g.updateEdgeAttribute(eid, 'hidden', () => false )
+            })
+          }
+          window.g = g
+
+          // Update coordinates
           $scope.layoutTarget = {}
           g.nodes().forEach(function(nid){
             var c = coordinates[nid]
@@ -144,11 +156,37 @@ angular.module('fabfrag.network', ['ngRoute'])
       })
 
       // Compute coordinates: ALIGNEMENT
+      var groupes_index = {}
       g.nodes().forEach(function(nid){
-        var place = $scope.nosDeputesData.places[g.getNodeAttribute(nid, 'place')]
-        $scope.coordinates.alignement[nid] = {x:place.x, y:-place.y}
-        g.setNodeAttribute(nid, 'x', place.x)
-        g.setNodeAttribute(nid, 'y', -place.y)
+        var groupe = g.getNodeAttribute(nid, 'groupe')
+        groupes_index[groupe] = (groupes_index[groupe] || 0) + 1
+      })
+      var totalCount = 0
+      var groupes = d3.keys(groupes_index).map(function(groupe){
+        var count = groupes_index[groupe]
+        totalCount += count
+        return {
+          acronyme: groupe,
+          count: count,
+          rank: $scope.nosDeputesData.groupes_byAcro[groupe].order
+        }
+      })
+      groupes.sort(function(a, b){
+        return a.rank - b.rank
+      })
+      groupes_index = {}
+      var currentCount = 0
+      groupes.forEach(function(groupe){
+        groupe.percent = (currentCount + groupe.count/2) / totalCount
+        currentCount += groupe.count
+        groupes_index[groupe.acronyme] = groupe
+      })
+      g.nodes().forEach(function(nid){
+        var groupe = groupes_index[g.getNodeAttribute(nid, 'groupe')]
+        var angle = Math.PI * (1 - groupe.percent)
+        var x = 250 * Math.cos(angle)
+        var y = 250 * Math.sin(angle)
+        $scope.coordinates.alignement[nid] = {x:x, y:y}
       })
 
       // Compute coordinates: HEMICYCLE
@@ -179,6 +217,8 @@ angular.module('fabfrag.network', ['ngRoute'])
       // TODO
 
       $scope.network = g
+
+      updateNetwork()
     }
 
 });

@@ -50,11 +50,11 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
 
         $scope.$watch('layoutVersion', function(){
           // Update network
-          
           var settings = {
             duration: 500,
             easing: 'cubicOut'
           }
+          console.log('hidden', $scope.g.getEdgeAttribute($scope.g.edges()[0], 'hidden'))
           var cancelAnimate = Sigma.animate.animateNodes($scope.g, $scope.layoutTarget, settings, function(err){})
         })
 
@@ -123,6 +123,8 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
               labelWeight: '400',
               labelSize: 16
             })
+            
+            window.renderer = renderer
 
             $scope.zoomIn = function(){
               var camera = renderer.getCamera()
