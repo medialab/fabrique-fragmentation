@@ -40,7 +40,7 @@ with connection.cursor() as cursor:
         if texteloi_id not in ids_dossier_an :
             break
         print("texte %s"%texteloi_id)
-        if texteloi_id not in output :
+        if ids_dossier_an[texteloi_id] not in output :
             output[ids_dossier_an[texteloi_id]] = {}
         output[ids_dossier_an[texteloi_id]][texteloi_id] = {} 
         for article,amds in itertools.groupby(txtamds,key=lambda a : (a['sujet']) ):
@@ -51,7 +51,7 @@ with connection.cursor() as cursor:
             groupes_nb_internal_cosign = defaultdict(int)
             groupes_nb_parlementaire = defaultdict(list)
             inter_groupe = 0
-            
+
             for uniqueAmds,duplicates in itertools.groupby(amds,key=lambda a : a['content_md5'] ):
             
                 duplicates = list(duplicates)
