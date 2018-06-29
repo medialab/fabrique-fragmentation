@@ -173,10 +173,12 @@ config(function($routeProvider, $mdThemingProvider) {
       d3.keys(projetIndex.articles).forEach(function(article_id){ // get the indexes by key
       	var articleIndex = projetIndex.articles[article_id]
 	      articleIndex.alignement = d3.mean(d3.keys(projet), function(lecture_id){
-	      	return projet[lecture_id][article_id].alignement
+	      	var article = projet[lecture_id][article_id]
+	      	return article && article.alignement
 	      })
 	      articleIndex.amendements = d3.sum(d3.keys(projet), function(lecture_id){
-	      	return projet[lecture_id][article_id].amendements
+	      	var article = projet[lecture_id][article_id]
+	      	return article && article.amendements
 	      })
 
 	      articleIndex.fragmentation = {}
@@ -188,7 +190,7 @@ config(function($routeProvider, $mdThemingProvider) {
 	      d3.keys(articleIndex.fragmentation).forEach(function(k){ // get the averages by key
 	      	articleIndex.fragmentation[k] = d3.mean(d3.keys(projet), function(lecture_id){
 	      		var article = projet[lecture_id][article_id]
-	      		return !article.ignore && article.fragmentation[k]
+	      		return article && !article.ignore && article.fragmentation[k]
 	      	})
 	      })
 	      var voidKeys = d3.keys(articleIndex.fragmentation).filter(function(k){
