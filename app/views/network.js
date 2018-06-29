@@ -23,6 +23,8 @@ angular.module('fabfrag.network', ['ngRoute'])
 
         $scope.projetData = data[$routeParams.projet_id]
         $scope.projetIndex = dataStore.getIndexes().projets[$routeParams.projet_id]
+        console.log('DATA', $scope.projetData)
+        console.log('INDEX', $scope.projetIndex)
         
         if ($scope.projetData) {
           $scope.structure = {
@@ -44,19 +46,49 @@ angular.module('fabfrag.network', ['ngRoute'])
           }
         })
 
-
-        // Crunch the data
-        console.log('projet data', $scope.projetData)
+        updateNetwork()
 
       })
     })
 
-    $scope.$watch('lectureFocus', function(){
-    })
+    $scope.$watch('lectureFocus', updateNetwork)
+    $scope.$watch('articleFocus', updateNetwork)
 
     function updateNetwork() {
       $timeout(function(){
+        if ($scope.projetData == undefined || $scope.projetIndex == undefined) return
 
+        var parlementaires = {}
+        var cosignatures = {}
+        var lectures = $scope.lectureFocus == '' ? d3.keys($scope.projetData) : [$scope.lectureFocus]
+        var articles = $scope.articleFocus == '' ? d3.keys($scope.projetIndex.articles) : [$scope.articleFocus]
+        lectures.forEach(function(lecture_id){
+          articles.forEach(function(article_id){
+            var articleData = $scope.projetData[lecture_id][article_id]
+            if (articleData) {
+              articleData.sign_amend.forEach(function(cosignataires){
+                // Register parlementaires
+                cosignataires.forEach(function(p){
+                  parlementaires[p.id] = parlementaires[p.id] || {id:p.id, groupe: p.groupe, count: 0}
+                  parlementaires[p.id].count++
+                })
+
+                // Register links
+                cosignataires.forEach(function(p1, i1){
+                  cosignataires.some(function(p2, i2){
+                    if (i1 > i2) {
+                      var linkid = p1.id + '-' + p2.id
+                      cosignatures[linkid] = cosignatures[linkid] || {source: p1.id, target: p2.id, count:0}
+                      cosignatures[linkid].count++
+                      return false
+                    } else return true
+                  })
+                })
+              })
+            }
+          })
+        })
+        console.log(parlementaires, cosignatures)
       })
     }
 
