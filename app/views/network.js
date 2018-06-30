@@ -203,7 +203,9 @@ angular.module('fabfrag.network', ['ngRoute'])
       })
       g.nodes().forEach(function(nid){
         var groupe = groupes_index[g.getNodeAttribute(nid, 'groupe')]
-        var angle = Math.PI * (1 - groupe.percent)
+        var angleMin = 1.2 * Math.PI
+        var angleMax = -0.2 * Math.PI
+        var angle = angleMin - groupe.percent * (angleMin - angleMax)
         var jitterAngle = Math.random() * 2 * Math.PI
         var jitterRadius = Math.random() * 3 * Math.sqrt(groupe.count)
         var x = 250 * Math.cos(angle) + jitterRadius * Math.cos(jitterAngle)
