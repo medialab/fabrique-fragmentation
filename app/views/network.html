@@ -58,31 +58,49 @@
   <!-- ARTICLES -->
   <div layout="column" flex ng-if="showArticles">
     <div layout="column" flex>
-      <div style="height: 40px">
-        LIST HEADER
-      </div>
-      <div flex>
-        <md-virtual-repeat-container layout-fill md-colors="{'background':'default-background-A100-0.2'}">
-          <md-list
-            md-colors="{'background':'default-background-A100-0.8'}"
+      <md-toolbar md-scroll-shrink style="overflow-y: scroll">
+        <div class="md-toolbar-tools" layout="row">
+          <div layout="row" flex="50">
+            <div flex="40" layout="column" layout-align="center start">
+              Alignement
+            </div>
+            <div flex layout="column" layout-align="center center">
+              Fragmentation
+            </div>
+            <div style="width: 80px; margin-right: 24px; font-size: 0.6em" layout="column" layout-align="center end">
+              <div>Nb amend.</div>
+              <div>cosignés</div>
+              <div>par 2+ parl.</div>
+            </div>
+          </div>
+          <div layout="row" flex="50">
+            <div flex layout="column" layout-align="center">
+              Article
+            </div>
+          </div>
+        </div>
+      </md-toolbar>
+      <div flex style="overflow: auto">
+        <md-list
+          md-colors="{'background':'default-background-A100-0.8'}"
+        >
+          <md-list-item
+            ng-repeat="item in articles"
+            md-item-size="100"
+            ng-click="$parent.$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
+            flex
           >
-            <md-list-item
-              md-virtual-repeat="item in articles"
-              md-item-size="100"
-              ng-click="$parent.$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
-              flex
-            >
-              <div style="height: 100px; line-height: initial;" flex>
-                <align-frag-list-item
-                  item="item"
-                  groups="nosDeputesData.groupes_byAcro"
-                  ng-if="item.amendements > 0"
-                  layout-fill
-                ></align-frag-list-item>
-              </div>
-            </md-list-item>
-          </md-list>
-        </md-virtual-repeat-container>
+            <div style="height: 100px; line-height: initial;" flex>
+              <align-frag-list-item
+                item="item"
+                groups="nosDeputesData.groupes_byAcro"
+                ng-if="item.amendements > 0"
+                show-date="false"
+                layout-fill
+              ></align-frag-list-item>
+            </div>
+          </md-list-item>
+        </md-list>
       </div>
     </div>
   </div>

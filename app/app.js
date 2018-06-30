@@ -320,8 +320,6 @@ config(function($routeProvider, $mdThemingProvider) {
     d.alignement = sum_of_potential_external_cosignatures > 0 ? external_density : undefined
     d.fragmentation = groups_fragmentation
     d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
-  
-    console.log(d.alignement, d.inter_cosign, sum_of_potential_external_cosignatures)
   }
 
   return ns
@@ -334,7 +332,8 @@ config(function($routeProvider, $mdThemingProvider) {
     templateUrl: 'components/alignFragListItem.html',
     scope: {
       item: '=',
-      groups: '='
+      groups: '=',
+      showDate: '='
     }
   }
 })

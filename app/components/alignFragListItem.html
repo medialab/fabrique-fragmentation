@@ -20,7 +20,7 @@
 				{{item.description2}}
 			</small>
 		</div>
-		<div layout="column" layout-align="center" style="font-size: 0.8em; padding-left: 12px; width: 80px">
+		<div layout="column" layout-align="center" style="font-size: 0.8em; padding-left: 12px; width: 80px" ng-if="showDate || showDate === undefined">
 			<div layout="column" ng-if="item.dates.depot">
 				<div style="opacity: 0.6; font-size: 0.9em">dépot</div>
 				{{item.dates.depot}}
