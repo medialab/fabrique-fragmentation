@@ -21,15 +21,12 @@ angular.module('fabfrag.home', ['ngRoute'])
 
       // Data from Nos Députés
       $scope.nosDeputesData = r[0]
-      console.log('Nos Deputes Data', r[0])
 
       // Data about cosignatures
       $scope.items = []
       var projet_id
-      console.log('Projets', $scope.nosDeputesData.projets)
       for (projet_id in r[1]) {
         var projet = $scope.nosDeputesData.projets[projet_id]
-        console.log(projet_id)
         var projet_index = $scope.indexes.projets[projet_id]
         $scope.items.push({
           id: projet_id,

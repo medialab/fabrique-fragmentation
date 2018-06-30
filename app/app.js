@@ -162,7 +162,6 @@ config(function($routeProvider, $mdThemingProvider) {
   			data.projets[projet.assemblee_slug] = projet
   		})
   	})
-  	console.log(data.projetsData)
   }
 
   ns.consolidateSourceData = function(data) {
@@ -303,7 +302,7 @@ config(function($routeProvider, $mdThemingProvider) {
     // Cosignatures potential: if every pair of parlementaires consigned once (and only once)
     var cosignatures_potential = sum_of_parlementaires * (sum_of_parlementaires - 1)
 
-    var sum_of_potential_external_cosignatures = cosignatures_potential - sum_of_internal_cosignatures
+    var sum_of_potential_external_cosignatures = cosignatures_potential - sum_of_potential_internal_cosignatures
 
     // Sum of cosignatures
     var sum_cosignatures = d.inter_cosign + sum_of_internal_cosignatures
@@ -318,10 +317,11 @@ config(function($routeProvider, $mdThemingProvider) {
       var group_density = g.nc / (g.np * (g.np - 1))
       groups_fragmentation[group_id] = Math.max(0, 1 - group_density)
     }
-
-    d.alignement = external_density
+    d.alignement = sum_of_potential_external_cosignatures > 0 ? external_density : undefined
     d.fragmentation = groups_fragmentation
     d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
+  
+    console.log(d.alignement, d.inter_cosign, sum_of_potential_external_cosignatures)
   }
 
   return ns
@@ -392,7 +392,7 @@ config(function($routeProvider, $mdThemingProvider) {
 
 				  // append the rectangles for the bar chart
 				  svg.append('rect')
-				      .attr('width', function(d) {return x(Math.max(0, $scope.alignement)) } )
+				      .attr('width', function(d) {return x(Math.max(0, Math.min(1, $scope.alignement))) } )
 				      .attr('y', y(1))
 				      .attr('height', y(0))
 				      .attr('fill', 'rgba(40, 30, 30, 0.8)')
