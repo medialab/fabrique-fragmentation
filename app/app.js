@@ -392,7 +392,7 @@ config(function($routeProvider, $mdThemingProvider) {
 
 				  // append the rectangles for the bar chart
 				  svg.append('rect')
-				      .attr('width', function(d) {return x($scope.alignement) } )
+				      .attr('width', function(d) {return x(Math.max(0, $scope.alignement)) } )
 				      .attr('y', y(1))
 				      .attr('height', y(0))
 				      .attr('fill', 'rgba(40, 30, 30, 0.8)')

@@ -46,25 +46,23 @@
         </div>
       </div>
     </md-toolbar>
-    <div flex>
-      <md-virtual-repeat-container layout-fill md-colors="{'background':'default-background-A100-0.2'}">
-        <md-list
-          md-colors="{'background':'default-background-A100-0.8'}"
+    <div flex style="overflow: auto">
+      <md-list
+        md-colors="{'background':'default-background-A100-0.8'}"
+      >
+        <md-list-item
+          ng-repeat="item in items"
+          ng-if="item.amendements >= 5"
+          md-item-size="100"
+          style="height: 100px;"
+          ng-href="#!/network/{{item.id}}"
+          flex
         >
-          <md-list-item
-            md-virtual-repeat="item in items"
-            ng-if="item.amendements >= 5"
-            md-item-size="100"
-            style="height: 100px;"
-            ng-href="#!/network/{{item.id}}"
-            flex
-          >
-            <div style="height: 100px; line-height: initial;" layout-fill>
-              <align-frag-list-item item="item" groups="nosDeputesData.groupes_byAcro" layout-fill></align-frag-list-item>
-            </div>
-          </md-list-item>
-        </md-list>
-      </md-virtual-repeat-container>
+          <div style="height: 100px; line-height: initial;" layout-fill>
+            <align-frag-list-item item="item" groups="nosDeputesData.groupes_byAcro" layout-fill></align-frag-list-item>
+          </div>
+        </md-list-item>
+      </md-list>
     </div>
   </div>
 </div>
