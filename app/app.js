@@ -203,12 +203,13 @@ config(function($routeProvider, $mdThemingProvider) {
 
         // Aggregate indexes to the LECTURE level
         var lectureIndex = indexes.projets[projet_id].lectures[lecture_id]
-        lectureIndex.alignement = d3.mean(d3.keys(lecture), function(d){
-        	return lecture[d].alignement
+        lectureIndex.alignement_total = d3.sum(d3.keys(lecture), function(d){
+        	return lecture[d].alignement_total
         })
         lectureIndex.amendements = d3.sum(d3.keys(lecture), function(d){
         	return lecture[d].amendements
         })
+        lectureIndex.alignement = lectureIndex.alignement_total / lectureIndex.amendements
         lectureIndex.fragmentation = {}
         d3.keys(lecture).forEach(function(d){ // get the keys
         	d3.keys(lecture[d].fragmentation).forEach(function(k){
@@ -226,12 +227,13 @@ config(function($routeProvider, $mdThemingProvider) {
       var projetIndex = indexes.projets[projet_id]
       
       // Aggregate indexes to the PROJET level
-      projetIndex.alignement = d3.mean(d3.keys(projet), function(d){
-      	return projetIndex.lectures[d].alignement
+      projetIndex.alignement_total = d3.sum(d3.keys(projet), function(d){
+      	return projetIndex.lectures[d].alignement_total
       })
       projetIndex.amendements = d3.sum(d3.keys(projet), function(d){
       	return projetIndex.lectures[d].amendements
       })
+      projetIndex.alignement = projetIndex.alignement_total / projetIndex.amendements
       projetIndex.fragmentation = {}
       d3.keys(projet).forEach(function(d){ // get the keys
       	d3.keys(projetIndex.lectures[d].fragmentation).forEach(function(k){
@@ -247,14 +249,15 @@ config(function($routeProvider, $mdThemingProvider) {
       // Aggregate indexes to the ARTICLE level
       d3.keys(projetIndex.articles).forEach(function(article_id){ // get the indexes by key
       	var articleIndex = projetIndex.articles[article_id]
-	      articleIndex.alignement = d3.mean(d3.keys(projet), function(lecture_id){
+	      articleIndex.alignement_total = d3.sum(d3.keys(projet), function(lecture_id){
 	      	var article = projet[lecture_id][article_id]
-	      	return article && article.alignement
+	      	return article && article.alignement_total
 	      })
 	      articleIndex.amendements = d3.sum(d3.keys(projet), function(lecture_id){
 	      	var article = projet[lecture_id][article_id]
 	      	return article && article.amendements
 	      })
+	      articleIndex.alignement = articleIndex.alignement_total / articleIndex.amendements
 
 	      articleIndex.fragmentation = {}
 	      d3.keys(projet).forEach(function(lecture_id){ // get the keys
@@ -283,33 +286,10 @@ config(function($routeProvider, $mdThemingProvider) {
 
   // Compute the indexes for an article (of a lecture of a project)
   ns.consolidateArticle = function(d) {
-  	// d.groups /*be like*/ LR: {nc:630, np:36}
-   	// d.inter_cosign /*be like*/ 123
-    // d.sign_amend /*be like*/ List of lists of {id: 200, groupe: "LR"}
+  	// d.groups -be-like-> LR: {nc:630, np:36}
+   	// d.inter_cosign -be-like-> 123
+    // d.sign_amend -be-like-> List of lists of {id: 200, groupe: "LR"}
   	
-  	// Sum of internal cosignatures
-    var sum_of_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].nc })
-
-    // Sum of internal potential cosignatures
-    var sum_of_potential_internal_cosignatures = d3.sum(d3.keys(d.groups), function(group){
-      var count = d.groups[group].np
-      return count * (count - 1)
-    })
-
-    // Sum of parlementaires
-    var sum_of_parlementaires = d3.sum(d3.keys(d.groups), function(group){ return d.groups[group].np })
-    
-    // Cosignatures potential: if every pair of parlementaires consigned once (and only once)
-    var cosignatures_potential = sum_of_parlementaires * (sum_of_parlementaires - 1)
-
-    var sum_of_potential_external_cosignatures = cosignatures_potential - sum_of_potential_internal_cosignatures
-
-    // Sum of cosignatures
-    var sum_cosignatures = d.inter_cosign + sum_of_internal_cosignatures
-
-    var internal_density = sum_of_internal_cosignatures / sum_of_potential_internal_cosignatures
-    var external_density = d.inter_cosign / sum_of_potential_external_cosignatures
-
     var groups_fragmentation = {}
     var group_id
     for (group_id in d.groups) {
@@ -317,9 +297,11 @@ config(function($routeProvider, $mdThemingProvider) {
       var group_density = g.nc / (g.np * (g.np - 1))
       groups_fragmentation[group_id] = Math.max(0, 1 - group_density)
     }
-    d.alignement = sum_of_potential_external_cosignatures > 0 ? external_density : undefined
+    // d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
+    d.amendements = d.sign_amend.length
+    d.alignement_total = Math.sqrt(d.inter_cosign)
+    d.alignement = d.alignement_total / d.amendements
     d.fragmentation = groups_fragmentation
-    d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
   }
 
   return ns
@@ -386,12 +368,12 @@ config(function($routeProvider, $mdThemingProvider) {
 					          'translate(' + margin.left + ',' + margin.top + ')');
 
 				  // Scale the range of the data in the domains
-					x.domain([0, 1])
+					x.domain([0, 10])
 				  y.domain([0, 1])
 
 				  // append the rectangles for the bar chart
 				  svg.append('rect')
-				      .attr('width', function(d) {return x(Math.max(0, Math.min(1, $scope.alignement))) } )
+				      .attr('width', function(d) {return x($scope.alignement) } )
 				      .attr('y', y(1))
 				      .attr('height', y(0))
 				      .attr('fill', 'rgba(40, 30, 30, 0.8)')
@@ -400,7 +382,7 @@ config(function($routeProvider, $mdThemingProvider) {
 				  var labels =svg.append('text')
 				      .attr('x', function(d) {
 				      	if (x($scope.alignement) > width * settings.label_in_out_threshold) {
-				      		return x($scope.alignement) - 3 
+				      		return Math.min(x($scope.alignement), width) - 3 
 				      	} else {
 				      		return x($scope.alignement) + 3
 				      	}
