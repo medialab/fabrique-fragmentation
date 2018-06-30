@@ -1,5 +1,6 @@
 node_modules/*
 app/bundle.js
+app/bundle.js.map
 
 # Windows thumbnail cache files
 Thumbs.db

@@ -24,9 +24,9 @@
   },
   "scripts": {
     "build": "webpack --colors --progress",
-    "dev": "webpack-dev-server --port 3000 -d --colors --progress --watch",
+    "dev": "webpack-dev-server --port 3000 --colors --progress --watch",
     "postinstall": "npm run build",
-    "watch": "webpack -d --colors --progress --watch"
+    "watch": "webpack --colors --progress --watch"
   },
   "repository": {
     "type": "git",
