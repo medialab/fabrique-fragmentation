@@ -26,14 +26,19 @@ angular.module('fabfrag.home', ['ngRoute'])
       // Data about cosignatures
       $scope.items = []
       var projet_id
+      console.log('Projets', $scope.nosDeputesData.projets)
       for (projet_id in r[1]) {
+        var projet = $scope.nosDeputesData.projets[projet_id]
+        console.log(projet_id)
         var projet_index = $scope.indexes.projets[projet_id]
         $scope.items.push({
           id: projet_id,
-          shortName: projet_id,
-          date: {
-            depot: 'à faire',
-            promulgation: 'à faire'
+          shortName: projet ? projet.short_title : projet_id,
+          description1: projet ? projet.law_name : undefined,
+          description2: projet ? projet.themes.join(', ') : undefined,
+          dates: {
+            depot: projet ? projet.beginning : undefined,
+            promulgation: projet ? projet.end : undefined
           },
           alignement: projet_index.alignement,
           amendements: projet_index.amendements,

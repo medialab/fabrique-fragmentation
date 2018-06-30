@@ -79,9 +79,31 @@ config(function($routeProvider, $mdThemingProvider) {
 	  			$http.get('https://2012-2017.nosdeputes.fr/organismes/groupe/json'),
 	  			$http.get('https://www.nosdeputes.fr/deputes/json'),
 	  			$http.get('https://2012-2017.nosdeputes.fr/deputes/json'),
-	  			$http.get('data/places.json')
+	  			$http.get('data/places.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_0.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_1.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_2.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_3.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_4.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_5.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_6.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_7.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_8.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_9.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_10.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_11.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_12.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_13.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_14.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_15.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_16.json'),
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_17.json')
 	  		]).then(function(r){
-	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}, places:r[4].data}
+	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}, places:r[4].data, projetsData:[]}
+	  			var i
+	  			for (i=0; i<=17; i++){
+	  				ns.nosdeputesData.projetsData.push(r[5+i].data)
+	  			}
 	  			dataCruncher.consolidateNosDeputesData(ns.nosdeputesData)
 	  			resolve(ns.nosdeputesData)
 	  		}, function(r){
@@ -133,6 +155,14 @@ config(function($routeProvider, $mdThemingProvider) {
   			data.groupes_byAcro[org.organisme.acronyme] = org.organisme
   		})
   	})
+
+  	data.projets = {}
+  	data.projetsData.forEach(function(d){
+  		d.dossiers.forEach(function(projet){
+  			data.projets[projet.assemblee_slug] = projet
+  		})
+  	})
+  	console.log(data.projetsData)
   }
 
   ns.consolidateSourceData = function(data) {
