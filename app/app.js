@@ -61,6 +61,12 @@ config(function($routeProvider, $mdThemingProvider) {
   }
 })
 
+.filter('toUpperCase', function() {
+  return function(d) {
+    return d.toUpperCase()
+  }
+})
+
 // Services
 .factory('dataStore', function($http, $timeout, dataCruncher){
   var ns = {}     // namespace

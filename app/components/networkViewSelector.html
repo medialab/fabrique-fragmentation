@@ -14,8 +14,11 @@
 		md-colors="{background: selectedView == view ? 'default-background-A100' : 'default-background-50-0.0'}"
 		layout-fill
 	>
+		<div style="width: 50%; opacity: 0.7;">
+			<img src="res/layout-{{view}}.svg" layout-fill></img>
+		</div>
 		<div>
-			{{view}}
+			{{view|toUpperCase}}
 		</div>
 	</md-content>
 </div>
