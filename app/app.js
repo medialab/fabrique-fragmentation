@@ -251,6 +251,9 @@ config(function($routeProvider, $mdThemingProvider) {
       		return projetIndex.lectures[d].fragmentation[k]
       	})
       })
+      projetIndex.fragmentation_moyenne = d3.mean(d3.keys(projetIndex.fragmentation), function(d){ return projetIndex.fragmentation[d]})
+      projetIndex.fragmentation_max = d3.max(d3.keys(projetIndex.fragmentation), function(d){ return projetIndex.fragmentation[d]})
+
 
       // Aggregate indexes to the ARTICLE level
       d3.keys(projetIndex.articles).forEach(function(article_id){ // get the indexes by key

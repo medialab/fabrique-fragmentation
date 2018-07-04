@@ -11,6 +11,15 @@ angular.module('fabfrag.home', ['ngRoute'])
 
 .controller('HomeCtrl', function($scope, $timeout, $location, dataStore) {
 	$scope.loading = true
+  $scope.sortKey = 'alignement'
+  $scope.sortReverse = {
+    shortName: false,
+    alignement: true,
+    amendements: true,
+    'dates.depot': true,
+    fragmentation_max: true,
+    fragmentation_moyenne: true
+  }
 
   Promise.all([
     dataStore.getNosDeputesData(),
@@ -39,7 +48,9 @@ angular.module('fabfrag.home', ['ngRoute'])
           },
           alignement: projet_index.alignement,
           amendements: projet_index.amendements,
-          fragmentation: projet_index.fragmentation
+          fragmentation: projet_index.fragmentation,
+          fragmentation_moyenne: projet_index.fragmentation_moyenne,
+          fragmentation_max: projet_index.fragmentation_max
         })
 
       }
