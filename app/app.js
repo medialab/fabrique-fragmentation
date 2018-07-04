@@ -458,7 +458,7 @@ config(function($routeProvider, $mdThemingProvider) {
 	        var settings = {}
 	        settings.column_spacing = 6
 	        settings.bar_thickness = 2
-	        settings.label_y_offset = -6
+	        settings.label_y_offset = -12
 	        settings.label_font_family = 'Quicksand, sans-serif'
           settings.label_font_weight = '400'
           settings.label_font_size = '14px'
