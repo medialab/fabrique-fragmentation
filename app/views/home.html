@@ -39,6 +39,13 @@
         </md-option>
       </md-select>
     </md-input-container>
+    <md-input-container flex style="margin-left: 48px">
+      <label>Chercher une loi</label>
+      <md-icon>search</md-icon>
+      <input
+        ng-model="query"
+      >
+    </md-input-container>
   </div>
 
   <!-- LIST -->
@@ -69,7 +76,7 @@
         md-colors="{'background':'default-background-A100-0.8'}"
       >
         <md-list-item
-          ng-repeat="item in items|orderBy:sortKey:sortReverse[sortKey]"
+          ng-repeat="item in items|filter:query|orderBy:sortKey:sortReverse[sortKey]"
           ng-if="item.amendements >= 5"
           md-item-size="100"
           style="height: 100px;"
