@@ -10,28 +10,42 @@
 <!-- Loaded -->
 <div layout="column" layout-fill ng-if="!loading" md-colors="{'background-color':'default-primary-50', 'color':'default-primary-600'}">
 
-  <div layout="row" style="height: 140px; z-index: 10" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
+  <!-- HEADER -->
+  <div style="height: 60px" layout="row">
+    <div style="padding: 6px">
+      <a href="#!/">
+        <img src="res/the-law-factory-logo.svg" style="height: 100%">
+      </a>
+    </div>
+    <div flex class="md-padding" layout="column" layout-align="center start">
+      <div>
+        <strong>Alignement et Fragmentation</strong>
+        <br>
+        des groupes politiques par les co-signatures d'amendements
+      </div>
+    </div>
+  </div>
+
+  <div layout="row" style="height: 100px; z-index: 10" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
     <!-- <div style="width: 100px">
       TODO: Loi précédente
     </div> -->
     <div layout="column" flex>
-      <div flex="33" layout="column" layout-align="center center">
-        <md-button ng-click="$parent.lectureFocus = ''">
+      <div flex="50" layout="row" layout-align="start center">
+        <md-button ng-click="$parent.lectureFocus = ''" style="max-width: 400px" md-truncate>
           <md-icon style="color: #FFF" ng-if="lectureFocus == ''">radio_button_checked</md-icon>
           <md-icon style="color: #FFF" ng-if="lectureFocus != ''">radio_button_unchecked</md-icon>
           {{structure.projet}}
         </md-button>
-      </div>
-      <div flex="33" layout="row" md-colors="{'background':'default-primary-500-0.8'}">
         <div ng-repeat="lecture in structure.lectures" flex layout="column" layout-align="center center">
           <md-button ng-click="$parent.$parent.lectureFocus = lecture">
             <md-icon style="color: #FFF" ng-if="lectureFocus == lecture">radio_button_checked</md-icon>
             <md-icon style="color: #FFF" ng-if="lectureFocus != lecture">radio_button_unchecked</md-icon>
-            Lecture {{lecture}}
+            Etape {{lecture}}
           </md-button>
         </div>
       </div>
-      <div flex="33" layout="row" layout-align="center center">
+      <div flex="50" layout="row" layout-align="center center" md-colors="{'background':'default-primary-500-0.8'}">
         <md-button class="md-default" ng-click="$parent.showArticles = true" ng-if="!showArticles && articleFocus==''">
           <md-icon style="color: #FFF">filter_list</md-icon>
           Choisir un article
