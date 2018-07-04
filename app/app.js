@@ -469,7 +469,7 @@ config(function($routeProvider, $mdThemingProvider) {
 					    height = container.offsetHeight - margin.top - margin.bottom;
 					// set the ranges
 					var y = d3.scaleLinear()
-					          .range([0, height])
+					          .range([0, height - 3.5*settings.bar_thickness])
 
 					var x = d3.scaleBand()
 					          .range([0, width])
@@ -496,7 +496,10 @@ config(function($routeProvider, $mdThemingProvider) {
 					  		.attr('class', 'col')
 					      .attr('x', function(d, i) { return x(i) + settings.column_spacing/2 })
 					      .attr('width', function(d) { return x.bandwidth() - settings.column_spacing } )
-					      .attr('y', function(d) { return (height - y(d.count))/2 + b * y(d.count) - settings.bar_thickness / 2 })
+					      .attr('y', function(d) {
+					      	var modY = y(d.count) + 3.5*settings.bar_thickness // No bars overlap for frag. 0
+					      	return (height - modY)/2 + b * modY - settings.bar_thickness / 2 
+					      })
 					      .attr('height', function(d) { return settings.bar_thickness })
 					      .attr('fill', function(d){ return 'rgb(' + $scope.groups[d.label].couleur + ')'})
 				  })
