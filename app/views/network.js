@@ -34,6 +34,7 @@ angular.module('fabfrag.network', ['ngRoute'])
         // Data about cosignatures
         $scope.projetData = r[1][$routeParams.projet_id]
         $scope.projetIndex = dataStore.getIndexes().projets[$routeParams.projet_id]
+        $scope.projetInfo = $scope.nosDeputesData.projets[$routeParams.projet_id]
         console.log('DATA', $scope.projetData)
         console.log('INDEX', $scope.projetIndex)
         

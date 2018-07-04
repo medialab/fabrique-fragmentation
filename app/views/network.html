@@ -35,7 +35,7 @@
         <md-button ng-click="$parent.lectureFocus = ''" style="max-width: 400px" md-truncate>
           <md-icon style="color: #FFF" ng-if="lectureFocus == ''">radio_button_checked</md-icon>
           <md-icon style="color: #FFF" ng-if="lectureFocus != ''">radio_button_unchecked</md-icon>
-          {{structure.projet}}
+          {{projetInfo.short_title || structure.projet}}
         </md-button>
         <div ng-repeat="lecture in structure.lectures" flex layout="column" layout-align="center center">
           <md-button ng-click="$parent.$parent.lectureFocus = lecture">
