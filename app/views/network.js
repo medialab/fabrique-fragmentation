@@ -81,7 +81,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           if ($scope.selectedView == 'alignement') {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', false )
-              g.setEdgeAttribute(eid, 'color', '#AAA')
+              g.setEdgeAttribute(eid, 'color', 'rgba(220, 220, 220, 1.0)')
             })
             g.nodes().forEach(function(nid){
               g.setNodeAttribute(nid, 'size', 5)
@@ -97,7 +97,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           } else if ($scope.selectedView == 'reseau') {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', false )
-              g.setEdgeAttribute(eid, 'color', '#E6E6E6' )
+              g.setEdgeAttribute(eid, 'color', 'rgba(220, 220, 220, 1.0)')
             })
             g.nodes().forEach(function(nid){
               g.setNodeAttribute(nid, 'size', 5)
@@ -105,7 +105,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           } else if ($scope.selectedView == 'fragmentation') {
             g.edges().forEach(function(eid){
               g.setEdgeAttribute(eid, 'hidden', g.getNodeAttribute(g.source(eid), 'groupe') != g.getNodeAttribute(g.target(eid), 'groupe') )
-              g.setEdgeAttribute(eid, 'color', '#E6E6E6' )
+              g.setEdgeAttribute(eid, 'color', 'rgba(220, 220, 220, 1.0)' )
             })
             g.nodes().forEach(function(nid){
               g.setNodeAttribute(nid, 'size', 4)
@@ -171,7 +171,7 @@ angular.module('fabfrag.network', ['ngRoute'])
 
       d3.keys(cosignatures).forEach(function(linkid){
         var c = cosignatures[linkid]
-        var size = 0.5 + 4.5 * (1 - 1/Math.pow(c.count, 1/4))
+        var size = 0.01 + 0.99 * (1 - 1/Math.pow(c.count, 1/4))
         g.addEdge(c.source, c.target, {count:c.count, weight:c.count, size: size})
       })
 
@@ -227,13 +227,14 @@ angular.module('fabfrag.network', ['ngRoute'])
       // Compute coordinates: RESEAU
       if (g.order > 1 || g.size > 0) {
         FA2.assign(g, {
-          iterations: 30,
+          iterations: 100,
           settings: {
             barnesHutOptimize: false,
             strongGravityMode: true,
-            gravity: 0.1,
+            edgeWeightInfluence: 0.6,
+            gravity: 0.08,
             scalingRatio: 100,
-            slowDown: 1
+            slowDown: 5
           }
         })
       }
