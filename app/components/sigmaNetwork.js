@@ -57,6 +57,9 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
             easing: 'cubicOut'
           }
           var cancelAnimate = Sigma.animate.animateNodes($scope.g, $scope.layoutTarget, settings, function(err){})
+          if (renderer) {
+            $scope.resetCamera()
+          }
         })
 
         $scope.$watch('onNodeClick', updateMouseEvents)
