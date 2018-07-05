@@ -1,3 +1,6 @@
 .md-padding {
 	padding: 12px;
 }
+.nofocus:focus {
+  outline: none;
+}
