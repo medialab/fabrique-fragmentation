@@ -151,24 +151,31 @@
         <div layout="column" layout-align="start center" layout-fill style="position: absolute; pointer-events: none;" class="network-view-additional-layer">
           
           <!-- Additional layer: ALIGNEMENT -->
-          <div ng-if="selectedView == 'alignement'">
-            <h3>ALIGNEMENT</h3>
+          <div layout="column" layout-align="center center"  ng-if="selectedView == 'alignement'">
+            <h3>ALIGNEMENT = {{projetIndex.alignement|number}}</h3>
+            <p>
+              L'alignement est la moyenne de la racine du nombre de cosignatures inter-groupes par amendements.
+              Position des parlementaires par groupe.
+              Les cosignatures prennent en compte le dépôt d'amendements identiques.
+            </p>
           </div>
 
           <!-- Additional layer: HEMICYCLE -->
           <div layout="column" layout-align="center center" ng-if="selectedView == 'hemicycle'">
             <h3>HEMICYCLE</h3>
-            <p>Position des cosignataires dans l'hémicycle. Liens de cosignatures cachés.</p>
-            <p>Les cosignatures prennent en compte le dépôt d'amendements identiques.</p>
+            <p>
+              Position des parlementaires dans leur hémicycle.
+              Liens de cosignatures cachés.
+            </p>
           </div>
 
           <!-- Additional layer: RESEAU -->
-          <div ng-if="selectedView == 'reseau'">
+          <div layout="column" layout-align="center center"  ng-if="selectedView == 'reseau'">
             <h3>RESEAU</h3>
           </div>
 
           <!-- Additional layer: FRAGMENTATION -->
-          <div ng-if="selectedView == 'fragmentation'">
+          <div layout="column" layout-align="center center"  ng-if="selectedView == 'fragmentation'">
             <h3>FRAGMENTATION</h3>
           </div>
         </div>
