@@ -1,0 +1,231 @@
+
+<!-- Loading -->
+<div layout="column" layout-fill ng-if="loading" layout-align="center center">
+  <md-progress-circular
+    md-diameter="42"
+    md-mode="indeterminate"
+  ></md-progress-circular>
+</div>
+
+<!-- Loaded -->
+<div layout="column" layout-fill ng-if="!loading" md-colors="{'background-color':'default-primary-50', 'color':'default-primary-600'}">
+
+  <!-- HEADER -->
+  <div style="height: 60px" layout="row">
+    <div style="padding: 6px">
+      <a href="#!/">
+        <img src="res/the-law-factory-logo.svg" style="height: 100%">
+      </a>
+    </div>
+    <div flex class="md-padding" layout="column" layout-align="center start">
+      <div>
+        <strong>Alignement et Fragmentation</strong>
+        <br>
+        des groupes politiques par les co-signatures d'amendements
+      </div>
+    </div>
+  </div>
+
+  <div layout="row" style="height: 100px; z-index: 10" class="md-whiteframe-4dp" md-colors="{'background':'default-primary'}">
+    <div layout="column" flex>
+      <div flex="50" layout="row" layout-align="start center">
+        <md-button ng-click="$parent.lectureFocus = ''" style="max-width: 400px" md-truncate>
+          <md-icon style="color: #FFF" ng-if="lectureFocus == ''">radio_button_checked</md-icon>
+          <md-icon style="color: #FFF" ng-if="lectureFocus != ''">radio_button_unchecked</md-icon>
+          {{projetInfo.short_title || structure.projet}}
+        </md-button>
+        <div ng-repeat="lecture in structure.lectures" flex layout="column" layout-align="center center">
+          <md-button ng-click="$parent.$parent.lectureFocus = lecture">
+            <md-icon style="color: #FFF" ng-if="lectureFocus == lecture">radio_button_checked</md-icon>
+            <md-icon style="color: #FFF" ng-if="lectureFocus != lecture">radio_button_unchecked</md-icon>
+            Etape {{lecture}}
+          </md-button>
+        </div>
+      </div>
+      <div flex="50" layout="row" layout-align="center center" md-colors="{'background':'default-primary-500-0.8'}">
+        <md-button class="md-default" ng-click="$parent.showArticles = true" ng-if="!showArticles && articleFocus==''">
+          <md-icon style="color: #FFF">filter_list</md-icon>
+          Choisir un article
+        </md-button>
+        <md-button class="md-raised md-accent" ng-click="$parent.showArticles = true" ng-if="!showArticles && articleFocus!=''">
+          <md-icon>check_circle</md-icon>
+          {{articleFocus}}
+        </md-button>
+        <md-button class="md-raised md-default" ng-click="$parent.showArticles = false" ng-if="showArticles">
+          <md-icon>arrow_back</md-icon>
+          Revenir au réseau
+        </md-button>
+        <md-button class="md-raised md-accent" ng-click="$parent.$parent.articleFocus = ''; $parent.showArticles = false" ng-if="showArticles && articleFocus != ''">
+          <md-icon>close</md-icon>
+          Ne pas filtrer par article
+        </md-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLES -->
+  <div layout="column" flex ng-if="showArticles">
+    <div layout="column" flex>
+      <md-toolbar md-scroll-shrink style="overflow-y: scroll">
+        <div class="md-toolbar-tools" layout="row">
+          <div layout="row" flex="50">
+            <div flex="40" layout="column" layout-align="center start">
+              Alignement
+            </div>
+            <div flex layout="column" layout-align="center center">
+              Fragmentation
+            </div>
+            <div style="width: 80px; margin-right: 24px; font-size: 0.6em" layout="column" layout-align="center end">
+              <div>Nombre</div>
+              <div>d'amend.</div>
+            </div>
+          </div>
+          <div layout="row" flex="50">
+            <div flex layout="column" layout-align="center">
+              Article
+            </div>
+          </div>
+        </div>
+      </md-toolbar>
+      <div flex style="overflow: auto">
+        <md-list
+          md-colors="{'background':'default-background-A100-0.8'}"
+        >
+          <md-list-item
+            ng-repeat="item in articles"
+            md-item-size="100"
+            ng-click="$parent.$parent.$parent.articleFocus = item.id; $parent.$parent.showArticles = false"
+            flex
+          >
+            <div style="height: 100px; line-height: initial;" flex>
+              <align-frag-list-item
+                item="item"
+                groups="nosDeputesData.groupes_byAcro"
+                ng-if="item.amendements > 0"
+                show-date="false"
+                layout-fill
+              ></align-frag-list-item>
+            </div>
+          </md-list-item>
+        </md-list>
+      </div>
+    </div>
+  </div>
+
+  <!-- NETWORK -->
+  <div layout="row" flex ng-if="!showArticles">
+    <div layout="column" layout-align="center" style="width: 140px">
+      <network-view-selector
+        selected-view="$parent.$parent.selectedView"
+        view="'alignement'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected-view="$parent.$parent.selectedView"
+        view="'hemicycle'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected-view="$parent.$parent.selectedView"
+        view="'reseau'"
+      >
+      </network-view-selector>
+      <network-view-selector
+        selected-view="$parent.$parent.selectedView"
+        view="'fragmentation'"
+      >
+      </network-view-selector>
+    </div>
+
+    <div flex class="md-whiteframe-2dp" style="margin: 0px; background-color: #FFF; z-index: 5;">
+      <div layout-fill style="position: relative;">
+        <div layout-fill style="position: absolute;">
+          <sigma-network
+            network="network"
+            start-layout-on-load="false"
+            layout-version="layoutVersion"
+            layout-target="layoutTarget"
+            layout-fill
+          ></sigma-network>
+        </div>
+        <div layout="column" layout-align="start center" layout-fill style="position: absolute; pointer-events: none;" class="network-view-additional-layer">
+          
+          <!-- Additional layer: ALIGNEMENT -->
+          <div layout="column" layout-fill layout-align="center center"  ng-if="selectedView == 'alignement'">
+            <div layout="column" layout-align="center center">
+              <h3 class="white-background">ALIGNEMENT = {{alignement|number}}</h3>
+              <p class="white-background">
+                L'alignement est la moyenne par amendements du nombre de cosignatures inter-groupes.
+                Cosignatures de {{amendements}} amendements.
+              </p>
+            </div>
+            <div flex></div>
+            <div layout="column" layout-align="center center">
+              <p class="white-background">
+                Position des parlementaires par groupe.
+                Les cosignatures prennent en compte le dépôt d'amendements identiques.
+              </p>
+            </div>
+          </div>
+
+          <!-- Additional layer: HEMICYCLE -->
+          <div layout="column" layout-fill layout-align="center center" ng-if="selectedView == 'hemicycle'">
+            <div layout="column" layout-align="center center">
+              <h3 class="white-background">HEMICYCLE</h3>
+            </div>
+            <div flex></div>
+            <div layout="column" layout-align="center center">
+              <p class="white-background">
+                Position des parlementaires dans leur hémicycle.
+                Liens de cosignatures cachés.
+              </p>
+            </div>
+          </div>
+
+          <!-- Additional layer: RESEAU -->
+          <div layout="column" layout-fill layout-align="center center"  ng-if="selectedView == 'reseau'">
+            <div layout="column" layout-align="center center">
+              <h3 class="white-background">RESEAU</h3>
+              <p class="white-background">Cosignatures de {{amendements}} amendements.</p>
+            </div>
+            <div flex></div>
+            <div layout="column" layout-align="center center">
+              <p class="white-background">
+                Position des parlementaires au plus près de leurs cosignataires.
+                Les cosignatures prennent en compte le dépôt d'amendements identiques.
+              </p>
+            </div>
+          </div>
+
+          <!-- Additional layer: FRAGMENTATION -->
+          <div layout="column" layout-fill layout-align="center center" ng-if="selectedView == 'fragmentation'">
+            <div layout="column" layout-align="center center">
+              <h3 class="white-background">FRAGMENTATION</h3>
+              <p class="white-background">
+                La fragmentation vaut 1 moins la densité de liens de cosignatures à l'intérieur de chaque groupe.
+                Les cosignatures prennent en compte le dépôt d'amendements identiques. Cosignatures de {{amendements}} amendements.
+              </p>
+              <div layout="row" layout-align="center center" style="height: 50px">
+                <div layout="column" layout-align="center center" ng-repeat="groupe in groupes" style="width: 60px" class="white-background">
+                  <div style="font-weight: 500" ng-style="{'color':'rgb('+nosDeputesData.groupes_byAcro[groupe].couleur+')'}">{{groupe}}</div>
+                  <div>{{(fragmentation[groupe]|number)||'-'}}</div>
+                </div>
+              </div>
+            </div>
+            <div flex></div>
+            <div layout="column" layout-align="center center">
+              <p class="white-background">
+                Position des parlementaires par groupes, tirée de leur étalement dans la vue RESEAU.
+                Seuls les liens internes aux groupes sont montrés.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div layout="column" layout-align="center" ng-if="showDetails" style="width: 180px">
+    </div>
+  </div>
+
+</div>
