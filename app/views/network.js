@@ -268,8 +268,8 @@ angular.module('fabfrag.network', ['ngRoute'])
         var meanX = d3.mean(sample, function(n){ return n.x })
         var meanY = d3.mean(sample, function(n){ return n.y })
         sample.forEach(function(n){
-          n.x = n.x - meanX + 50000 * groupes_index[n.groupe].percent
-          n.y = (n.y - meanY) * 3
+          n.x = 0.1 * (n.x - meanX + 50000 * groupes_index[n.groupe].percent) / 3
+          n.y = 0.1 * (n.y - meanY)
           $scope.coordinates.fragmentation[n.id] = {x:n.x, y:n.y}
         })
       })
