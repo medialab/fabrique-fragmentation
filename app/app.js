@@ -80,6 +80,7 @@ config(function($routeProvider, $mdThemingProvider) {
 	  	if (ns.nosdeputesData) {
 	  		resolve(ns.nosdeputesData)
 	  	} else {
+	  		// FIXME: dynamically load the right number of files for the "dossiers"
 	  		Promise.all([
 	  			$http.get('https://www.nosdeputes.fr/organismes/groupe/json'),
 	  			$http.get('https://2012-2017.nosdeputes.fr/organismes/groupe/json'),
@@ -102,12 +103,11 @@ config(function($routeProvider, $mdThemingProvider) {
 	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_13.json'),
 	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_14.json'),
 	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_15.json'),
-	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_16.json'),
-	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_17.json')
+	  			$http.get('https://www.lafabriquedelaloi.fr/api/dossiers_16.json')
 	  		]).then(function(r){
 	  			ns.nosdeputesData = {groupesData: {current:r[0].data, 2012:r[1].data}, deputesData: {current:r[2].data, 2012:r[3].data}, places:r[4].data, projetsData:[]}
 	  			var i
-	  			for (i=0; i<=17; i++){
+	  			for (i=0; i<=16; i++){
 	  				ns.nosdeputesData.projetsData.push(r[5+i].data)
 	  			}
 	  			dataCruncher.consolidateNosDeputesData(ns.nosdeputesData)
@@ -204,6 +204,7 @@ config(function($routeProvider, $mdThemingProvider) {
           } else {
 	          // Compute the indexes of the article
 	          ns.consolidateArticle(article)
+	          indexes.projets[projet_id].lectures[lecture_id].articles[article_id] = article
           }
         }
 

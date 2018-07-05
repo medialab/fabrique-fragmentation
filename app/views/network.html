@@ -180,9 +180,20 @@
           </div>
 
           <!-- Additional layer: FRAGMENTATION -->
-          <div layout="column" layout-fill layout-align="center center"  ng-if="selectedView == 'fragmentation'">
-            <h3>FRAGMENTATION</h3>
+          <div layout="column" layout-fill layout-align="center center" ng-if="selectedView == 'fragmentation'">
             <div flex></div>
+            <div layout="column" layout-align="center center" style="background-color: rgba(255, 255, 255, 0.9)">
+              <h3>FRAGMENTATION</h3>
+              <p>
+                La fragmentation est la densité de liens de cosignatures à l'intérieur de chaque groupe. Les cosignatures prennent en compte le dépôt d'amendements identiques.
+              </p>
+              <div layout="row" layout-align="center center" style="height: 50px">
+                <div layout="column" layout-align="center center" ng-repeat="groupe in groupes" style="width: 60px">
+                  <div style="font-weight: 400">{{groupe}}</div>
+                  <div>{{(fragmentation[groupe]|number)||'-'}}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

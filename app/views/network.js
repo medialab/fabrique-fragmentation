@@ -121,6 +121,7 @@ angular.module('fabfrag.network', ['ngRoute'])
           })
 
           $scope.layoutVersion++
+
         })
       }
     }
@@ -283,6 +284,22 @@ angular.module('fabfrag.network', ['ngRoute'])
       $scope.network = g
 
       updateNetwork()
+
+      // Also, compute groupes and fragmentation (depends on the view)
+      $scope.groupes = d3.keys($scope.projetIndex.fragmentation)
+      $scope.groupes.sort(function(a, b){
+        return $scope.nosDeputesData.groupes_byAcro[a].order - $scope.nosDeputesData.groupes_byAcro[b].order
+      })
+      $scope.fragmentation = {}
+      if ($scope.lectureFocus == '' && $scope.articleFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.fragmentation
+      } else if($scope.lectureFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.articles[$scope.articleFocus].fragmentation
+      } else if($scope.articleFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].fragmentation
+      } else {
+        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].fragmentation
+      }
 
       /// Computing functions
 
