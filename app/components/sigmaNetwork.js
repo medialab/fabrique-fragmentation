@@ -114,7 +114,7 @@ angular.module('fabfrag.sigmaNetworkComponent', [])
           $timeout(function(){
 
             var settings = {}
-            settings.default_ratio = 1.2
+            settings.default_ratio = 1.6
 
             var container = document.getElementById('sigma-div')
             if (!container) return

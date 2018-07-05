@@ -291,14 +291,19 @@ angular.module('fabfrag.network', ['ngRoute'])
         return $scope.nosDeputesData.groupes_byAcro[a].order - $scope.nosDeputesData.groupes_byAcro[b].order
       })
       $scope.fragmentation = {}
+      $scope.alignement = undefined
       if ($scope.lectureFocus == '' && $scope.articleFocus == '') {
         $scope.fragmentation = $scope.projetIndex.fragmentation
+        $scope.alignement = $scope.projetIndex.alignement
       } else if($scope.lectureFocus == '') {
         $scope.fragmentation = $scope.projetIndex.articles[$scope.articleFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.articles[$scope.articleFocus].alignement
       } else if($scope.articleFocus == '') {
         $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].alignement
       } else {
         $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].alignement
       }
 
       /// Computing functions
