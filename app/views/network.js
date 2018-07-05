@@ -129,6 +129,34 @@ angular.module('fabfrag.network', ['ngRoute'])
     function computeNetwork() {
       if ($scope.projetData == undefined || $scope.projetIndex == undefined) return
 
+
+      // Preliminary: compute groupes and fragmentation (depends on the view)
+      $scope.groupes = d3.keys($scope.projetIndex.fragmentation)
+      $scope.groupes.sort(function(a, b){
+        return $scope.nosDeputesData.groupes_byAcro[a].order - $scope.nosDeputesData.groupes_byAcro[b].order
+      })
+      $scope.fragmentation = {}
+      $scope.alignement = undefined
+      $scope.amendements = undefined
+      if ($scope.lectureFocus == '' && $scope.articleFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.fragmentation
+        $scope.alignement = $scope.projetIndex.alignement
+        $scope.amendements = $scope.projetIndex.amendements
+      } else if($scope.lectureFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.articles[$scope.articleFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.articles[$scope.articleFocus].alignement
+        $scope.amendements = $scope.projetIndex.articles[$scope.articleFocus].amendements
+      } else if($scope.articleFocus == '') {
+        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].alignement
+        $scope.amendements = $scope.projetIndex.lectures[$scope.lectureFocus].amendements
+      } else {
+        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].fragmentation
+        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].alignement
+        $scope.amendements = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].amendements
+      }
+
+      // Compute network
       var parlementaires = {}
       var cosignatures = {}
       var lectures = $scope.lectureFocus == '' ? d3.keys($scope.projetData) : [$scope.lectureFocus]
@@ -171,7 +199,7 @@ angular.module('fabfrag.network', ['ngRoute'])
 
       d3.keys(cosignatures).forEach(function(linkid){
         var c = cosignatures[linkid]
-        var size = 0.01 + 0.99 * (1 - 1/Math.pow(c.count, 1/4))
+        var size = 0.01 + 0.99 * c.count / $scope.amendements
         g.addEdge(c.source, c.target, {count:c.count, weight:c.count, size: size})
       })
 
@@ -285,27 +313,6 @@ angular.module('fabfrag.network', ['ngRoute'])
       $scope.network = g
 
       updateNetwork()
-
-      // Also, compute groupes and fragmentation (depends on the view)
-      $scope.groupes = d3.keys($scope.projetIndex.fragmentation)
-      $scope.groupes.sort(function(a, b){
-        return $scope.nosDeputesData.groupes_byAcro[a].order - $scope.nosDeputesData.groupes_byAcro[b].order
-      })
-      $scope.fragmentation = {}
-      $scope.alignement = undefined
-      if ($scope.lectureFocus == '' && $scope.articleFocus == '') {
-        $scope.fragmentation = $scope.projetIndex.fragmentation
-        $scope.alignement = $scope.projetIndex.alignement
-      } else if($scope.lectureFocus == '') {
-        $scope.fragmentation = $scope.projetIndex.articles[$scope.articleFocus].fragmentation
-        $scope.alignement = $scope.projetIndex.articles[$scope.articleFocus].alignement
-      } else if($scope.articleFocus == '') {
-        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].fragmentation
-        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].alignement
-      } else {
-        $scope.fragmentation = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].fragmentation
-        $scope.alignement = $scope.projetIndex.lectures[$scope.lectureFocus].articles[$scope.articleFocus].alignement
-      }
 
       /// Computing functions
 

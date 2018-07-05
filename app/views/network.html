@@ -155,7 +155,8 @@
             <div layout="column" layout-align="center center">
               <h3 class="white-background">ALIGNEMENT = {{alignement|number}}</h3>
               <p class="white-background">
-                L'alignement est la moyenne par amendements de la racine du nombre de cosignatures inter-groupes.
+                L'alignement est la moyenne par amendements du nombre de cosignatures inter-groupes.
+                Cosignatures de {{amendements}} amendements.
               </p>
             </div>
             <div flex></div>
@@ -185,6 +186,7 @@
           <div layout="column" layout-fill layout-align="center center"  ng-if="selectedView == 'reseau'">
             <div layout="column" layout-align="center center">
               <h3 class="white-background">RESEAU</h3>
+              <p class="white-background">Cosignatures de {{amendements}} amendements.</p>
             </div>
             <div flex></div>
             <div layout="column" layout-align="center center">
@@ -201,7 +203,7 @@
               <h3 class="white-background">FRAGMENTATION</h3>
               <p class="white-background">
                 La fragmentation est la densité de liens de cosignatures à l'intérieur de chaque groupe.
-                Les cosignatures prennent en compte le dépôt d'amendements identiques.
+                Les cosignatures prennent en compte le dépôt d'amendements identiques. Cosignatures de {{amendements}} amendements.
               </p>
               <div layout="row" layout-align="center center" style="height: 50px">
                 <div layout="column" layout-align="center center" ng-repeat="groupe in groupes" style="width: 60px" class="white-background">

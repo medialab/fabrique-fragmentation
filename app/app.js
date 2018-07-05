@@ -67,6 +67,14 @@ config(function($routeProvider, $mdThemingProvider) {
   }
 })
 
+.filter('reverse', function() {
+  return function(items, flag) {
+  	if (flag)
+	    return items.slice().reverse();
+	 	else return items
+  }
+})
+
 // Services
 .factory('dataStore', function($http, $timeout, dataCruncher){
   var ns = {}     // namespace
@@ -309,7 +317,7 @@ config(function($routeProvider, $mdThemingProvider) {
     }
     // d.amendements = d.sign_amend.filter(function(d){ return d.length > 1 }).length // amendements signed by at least 2
     d.amendements = d.sign_amend.length
-    d.alignement_total = Math.sqrt(d.inter_cosign)
+    d.alignement_total = +d.inter_cosign
     d.alignement = d.alignement_total / d.amendements
     d.fragmentation = groups_fragmentation
   }
@@ -352,6 +360,7 @@ config(function($routeProvider, $mdThemingProvider) {
 	        container.innerHTML = '';
 
 	        var settings = {}
+	        settings.max_alignement = 300
 	        settings.label_in_out_threshold = 0.5
 	        settings.label_y_offset = 4
 	        settings.label_font_family = 'Quicksand, sans-serif'
@@ -378,7 +387,7 @@ config(function($routeProvider, $mdThemingProvider) {
 					          'translate(' + margin.left + ',' + margin.top + ')');
 
 				  // Scale the range of the data in the domains
-					x.domain([0, 10])
+					x.domain([0, settings.max_alignement])
 				  y.domain([0, 1])
 
 				  // append the rectangles for the bar chart

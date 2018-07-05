@@ -52,7 +52,6 @@ angular.module('fabfrag.home', ['ngRoute'])
           fragmentation_moyenne: projet_index.fragmentation_moyenne,
           fragmentation_max: projet_index.fragmentation_max
         })
-
       }
       $scope.loading = false
     })
